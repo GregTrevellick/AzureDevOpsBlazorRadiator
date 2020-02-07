@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+*.vsix
+Src/BlazingPoints/wwwroot/_framework/*
+
 # User-specific files
 *.rsuser
 *.suo
