@@ -1,20 +1,13 @@
+
+add gif to readme
+csv line break
 try using basic templates FAILS WITH 'TODO' & 'DOING' STATE
 try using cmmi templates EFFORT/SIZE should be size or original estimate
-add gif to readme
-edit bitly 
 https://khalidabuhakmeh.com/convert-a-csharp-object-to-almost-any-format
-add "works for agile, basic, cmmi & scrum templates" to vsmpreadme.md
-
-
-
-
---try using agile templates DONE
---try using scrum templates DONE
---before making gitub public & public vsix
 prettify xml/json/csv in the ui itself 
 dark theme (vss.init applyTheme: true)
-scan for gregt
 add to badge magic / readme badges
+scan for gregt
 add unit tests
 Pbis in > 1 sprint count
 Change iteration number
