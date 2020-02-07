@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "DailySprintMetrics",
+  "id": "BlazorRadiator",
   "version": "1.0.218",
   "name": "Blazor Radiator",
   "publisher": "GregTrevellick",
@@ -29,7 +29,7 @@
 
   "links": {
     "home": {
-      "uri": "https://marketplace.visualstudio.com/items?itemName=GregTrevellick.DailySprintMetrics"
+      "uri": "https://marketplace.visualstudio.com/items?itemName=GregTrevellick.BlazorRadiator"
     },
     "repository": {
       "uri": "https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator"
