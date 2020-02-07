@@ -1,4 +1,4 @@
-[GitHubRepoPullRequestsURL]: https://github.com/GregTrevellick/BlazorRadiator/pulls
+[GitHubRepoPullRequestsURL]: https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/pulls
 
 This extension adds a burndown chart and a work item volume / story points total bar-chart alongside the backlog pane.
 
@@ -14,7 +14,7 @@ Coming soon
 - [ ] Basic
 - [ ] CMMI 
 
-![](https://github.com/GregTrevellick/BlazorRadiator/blob/master/Src/BlazingPoints/artefacts/Screenshot2.png?raw=true)
+![](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/blob/master/Src/BlazingPoints/artefacts/Screenshot2.png?raw=true)
 
 Includes option to download graph data in a variety of formats.
 
