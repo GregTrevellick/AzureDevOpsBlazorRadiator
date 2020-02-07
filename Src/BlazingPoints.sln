@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29318.209
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingPoints", "BlazingPoints\BlazingPoints.csproj", "{02917B5F-3FB6-45DE-A506-8AC9F3AFB7CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7DAE2639-6506-4767-B138-0C64ADF0FE42}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		TODO.txt = TODO.txt
+		VsmpBuilder.bat = VsmpBuilder.bat
+		BlazingPoints\vss-extension.json = BlazingPoints\vss-extension.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02917B5F-3FB6-45DE-A506-8AC9F3AFB7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02917B5F-3FB6-45DE-A506-8AC9F3AFB7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02917B5F-3FB6-45DE-A506-8AC9F3AFB7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02917B5F-3FB6-45DE-A506-8AC9F3AFB7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF95F4D1-B48E-41C2-8CAE-9CA369865CCE}
+	EndGlobalSection
+EndGlobal

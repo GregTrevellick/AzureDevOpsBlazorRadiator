@@ -1,0 +1,17 @@
+﻿body {
+    font-family: 'Segoe UI VSS (Regular)', 'Segoe UI', sans-serif;
+}
+
+progress {
+    -webkit-appearance: none;
+}
+
+::-webkit-progress-bar {
+    background-color: #eee;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+.smallData {
+    font-size: xx-small;
+}

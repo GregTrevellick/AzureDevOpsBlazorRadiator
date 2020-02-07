@@ -1,0 +1,13 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager navigationManager
+@* Leverage this blazor component, which is called at startup to scan the assembly named below for pages/components with '@page' to use as path routing (e.g. www.mysite.com/blazingbacklogpanel routes via @page "/blazingbacklogpanel" to a component) to navigate to our desired target page within the iFrame. *@
+@{navigationManager.NavigateTo(@navigationManager.Uri.Replace("index.min.html", "") + "blazingbacklogpanel");}
+
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Index)" />
+    </Found>
+    <NotFound>
+        <p>Sorry, there's nothing at this address.</p>
+    </NotFound>
+</Router>

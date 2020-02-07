@@ -1,0 +1,28 @@
+try using basic templates FAILS WITH 'TODO' & 'DOING' STATE
+try using cmmi templates EFFORT/SIZE should be size or original estimate
+and gif to readme
+
+--try using agile templates DONE
+--try using scrum templates DONE
+--before making gitub public & public vsix
+dark theme (vss.init applyTheme: true)
+https://khalidabuhakmeh.com/convert-a-csharp-object-to-almost-any-format
+add "works for agile, basic, cmmi & scrum templates" to vsmpreadme.md
+dedupe code (gregt)
+rename to blazor radiator & edit bitly meme wording INC. ctl-H "blazingpoints" ==> "blazorradiators"
+add to badge magic / readme badges
+delete dead comments
+delete Z folder ?
+scan for gregt
+
+add unit tests
+Pbis in >1 sprint count
+Change iteration number
+prettify xml/json/csv in the ui itself 
+
+message when burndown hits zero "go home your job is done"
+
+
+https://danielcwilson.com/blog/2020/01/motion-path-quirks/
+https://css-tricks.com/css-animation-libraries/
+https://css-tricks.com/almanac/properties/o/offset-path/

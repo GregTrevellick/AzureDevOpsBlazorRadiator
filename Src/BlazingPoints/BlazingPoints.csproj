@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <LangVersion>7.3</LangVersion>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\_framework\**" />
+    <Content Remove="wwwroot\_framework\**" />
+    <EmbeddedResource Remove="wwwroot\_framework\**" />
+    <None Remove="wwwroot\_framework\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="*.vsix" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Api\zJsInterop.cs" />
+    <Compile Remove="Api\zMockData.cs" />
+    <Compile Remove="zStartup.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+    <Content Remove="vss-extension.json" />
+    <Content Remove="wwwroot\Images\3d-computer-graphics-3-d-man-dry-erase-boards-clip-art-3d-white-man-thumb.jpg" />
+    <Content Remove="wwwroot\Images\a3b516326d716bca147690d00fb4842e.jpg" />
+    <Content Remove="wwwroot\Images\BrandBlazor_nohalo_1000x-1.png" />
+    <Content Remove="wwwroot\Images\BrandBlazor_nohalo_1000x-1medium.png" />
+    <Content Remove="wwwroot\Images\CatalogIconA.png" />
+    <Content Remove="wwwroot\Images\clipboard-copy-write-paper-document-notes-20.png" />
+    <Content Remove="wwwroot\Images\clipboard-copy-write-paper-document-notes-512.png" />
+    <Content Remove="wwwroot\Images\DefaultIcon3.png" />
+    <Content Remove="wwwroot\Images\DefaultIconA.png" />
+    <Content Remove="wwwroot\Images\good life neil0LdirB.gif" />
+    <Content Remove="wwwroot\Images\goodlifeneil0LdirB.gif" />
+    <Content Remove="wwwroot\Images\males-2322810_1920.jpg" />
+    <Content Remove="wwwroot\Images\rads2.png" />
+    <Content Remove="wwwroot\Images\z3d-computer-graphics-3-d-man-dry-erase-boards-clip-art-3d-white-man-thumb.jpg" />
+    <Content Remove="wwwroot\Images\z89.gif" />
+    <Content Remove="wwwroot\Images\za3b516326d716bca147690d00fb4842e.jpg" />
+    <Content Remove="wwwroot\Images\zagoodlifeneil0LdirB.gif" />
+    <Content Remove="wwwroot\Images\zBrandBlazor_nohalo_1000x-1.png" />
+    <Content Remove="wwwroot\Images\zBrandBlazor_nohalo_1000x-1medium.png" />
+    <Content Remove="wwwroot\Images\zCatalogIcon.png" />
+    <Content Remove="wwwroot\Images\zCatalogIconA.png" />
+    <Content Remove="wwwroot\Images\zclipboard-copy-write-paper-document-notes-20.png" />
+    <Content Remove="wwwroot\Images\zclipboard-copy-write-paper-document-notes-512.png" />
+    <Content Remove="wwwroot\Images\zDefaultIcon.png" />
+    <Content Remove="wwwroot\Images\zDefaultIconA.png" />
+    <Content Remove="wwwroot\Images\zGitHub-Mark-120px-plus.png" />
+    <Content Remove="wwwroot\Images\zGitHub-Mark-64px.png" />
+    <Content Remove="wwwroot\Images\zmales-2322810_1920.jpg" />
+    <Content Remove="wwwroot\Images\zrads2.png" />
+    <Content Remove="wwwroot\Images\zUntitled1.png" />
+    <Content Remove="wwwroot\Images\zUntitled2.png" />
+    <Content Remove="wwwroot\Images\zyellow line2.png" />
+    <Content Remove="wwwroot\Images\zyellowline.png" />
+    <Content Remove="wwwroot\Images\zyellowline2.png" />
+    <Content Remove="wwwroot\Images\zza3b516326d716bca147690d00fb4842e.jpg" />
+    <Content Remove="wwwroot\Images\z_rads_raw.jpg" />
+    <Content Remove="wwwroot\Images\z_rads_without_watermark_recatangle.jpg" />
+    <Content Remove="wwwroot\Images\z_rads_without_watermark_square.jpg" />
+    <Content Remove="wwwroot\Images\_rads_without_watermark_square_yellow_chart_line.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="artefacts\zburndown_alone.PNG" />
+    <None Remove="artefacts\zOverview.md" />
+    <None Remove="artefacts\zScreenshot.png" />
+    <None Remove="artefacts\zScreenshot2.png" />
+    <None Remove="artefacts\zvolumes_alone.PNG" />
+    <None Remove="vss-extension.json.bak" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Blazor" Version="19.1.10" />
+    <PackageReference Include="LinqToCsv" Version="1.5.0" />
+    <PackageReference Include="MatBlazor" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
+    <PackageReference Include="Microsoft.TeamFoundationServer.ExtendedClient" Version="16.153.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="16.153.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="REM copy bin\Debug\netstandard2.1\dist\_framework\ to wwwroot\_framework\&#xD;&#xA;rem  /S    Copy folders and subfolders&#xD;&#xA;rem  /Y    Suppress prompt to confirm overwriting a file.&#xD;&#xA;rem  /F    Display full source and destination file names while copying.&#xD;&#xA;rem  /R    Overwrite read-only files.&#xD;&#xA; &#xD;&#xA;echo &quot;SolutionDir&quot; %251&#xD;&#xA;echo &quot;ProjectDir&quot; %252&#xD;&#xA;&#xD;&#xA;xcopy %252bin\Debug\netstandard2.1\dist\_framework\* %252wwwroot\_framework\ /F /R /Y /S&#xD;&#xA;REM make the new files read-only&#xD;&#xA;attrib +R %252wwwroot\_framework\*" />
+  </Target>
+
+</Project>

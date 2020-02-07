@@ -1,0 +1,1 @@
+﻿https://raw.githubusercontent.com/SamProf/MatBlazor/master/src/MatBlazor/wwwroot/dist/matBlazor.js

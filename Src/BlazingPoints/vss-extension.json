@@ -1,0 +1,172 @@
+{
+  "manifestVersion": 1,
+  "id": "DailySprintMetrics",
+  "version": "1.0.218",
+  "name": "Blazor Radiator",
+  "publisher": "GregTrevellick",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Display burndown chart and work item statistics alongside your backlog.",
+  "icons": {
+    "default": "wwwroot/Images/DefaultIcon128x128.png"
+  },
+  "categories": [
+    "Azure Boards"
+  ],
+  "tags": [
+    "Agile",
+    "Backlog",
+    "Blazor",
+    "Burndown",
+    "Chart",
+    "Progress",
+    "Radiator",
+    "Sprint"
+  ],
+
+  "links": {
+    "home": {
+      "uri": "https://marketplace.visualstudio.com/items?itemName=GregTrevellick.DailySprintMetrics"
+    },
+    "repository": {
+      "uri": "https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator"
+    },
+    "issues": {
+      "uri": "https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/issues"
+    },
+    "support": {
+      "uri": "https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/issues"
+    },
+    "getstarted": {
+      "uri": "https://www.agilealliance.org/"
+    }
+  },
+
+  "branding": {
+    "color": "rgb(92,45,145)",
+    "theme": "dark"
+  },
+
+  "contributions": [
+    {
+      "id": "JSParamValue_SprintProgressBacklogsPanel",
+      "type": "ms.vss-work-web.backlog-panel",
+      "description": "Display burndown chart and work item statistics alongside your backlog",
+      "targets": [
+        "ms.vss-work-web.iteration-backlog-toolpane"
+      ],
+      "properties": {
+        "name": "Radiators",
+        "title": "Information Radiators",
+        "description": "Display burndown chart and work item statistics alongside your backlog",
+        "uri": "wwwroot/index.min.html",
+        "catalogIconUrl:": "wwwroot/Images/CatalogIcon98x98.png",
+        "previewImageUrl": "wwwroot/Images/DefaultIcon128x128.png"
+      }
+    }
+  ],
+  "scopes": [
+    "vso.work"
+  ],
+
+  "files": [
+    {
+      "path": "wwwroot/index.min.html",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/_content/MatBlazor/dist/matBlazor.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/Content/bundle.min.css",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/Images",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/lib/dx-blazor/dx-blazor.css",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/lib/dx-blazor/dx-blazor.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/lib/dx-blazor/dx-blazor.cjs.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/lib/dx-blazor/dx-blazor.esm.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/lib/dx-blazor/modules",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/Scripts/bundle.min.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/Scripts/console.image.min.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/Scripts/SDK/VSS.SDK.min.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/_framework/_bin",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/_framework/wasm/dotnet.js",
+      "addressable": true
+    },
+    {
+      "path": "wwwroot/_framework/wasm/dotnet.wasm",
+      "addressable": true,
+      "contentType": "application/wasm"
+    },
+    {
+      "path": "wwwroot/_framework/blazor.boot.json",
+      "addressable": true,
+      "contentType": "application/json"
+    },
+    {
+      "path": "wwwroot/_framework/blazor.webassembly.js",
+      "addressable": true
+    }
+  ],
+
+  "content": {
+    "details": {
+      "path": "artefacts/VsmpReadMe.md"
+    },
+    "license": {
+      "path": "artefacts/Licence.md"
+    }
+  },
+
+  "screenshots": [
+    {
+      "path": "artefacts/Screenshot.png"
+    },
+    {
+      "path": "artefacts/Screenshot2.png"
+    }
+  ],
+
+  "public": false,
+
+  "galleryFlags": [
+      "Preview"
+    ]
+  }
+                                                                      

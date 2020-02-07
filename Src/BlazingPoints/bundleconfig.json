@@ -1,0 +1,24 @@
+[
+  {
+    "outputFileName": "wwwroot/Content/bundle.css",
+    "inputFiles": [
+      "wwwroot/Content/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/index.min.html",
+    "inputFiles": [
+      "wwwroot/index.html"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/bundle.js",
+    "inputFiles": [
+      "wwwroot/Scripts/vss.js",
+      "wwwroot/Scripts/api.js",
+      "wwwroot/Scripts/base.js",
+      "wwwroot/Scripts/copyClipboard.js",
+      "wwwroot/Scripts/img.js"
+    ]
+  }
+]

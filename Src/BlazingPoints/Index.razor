@@ -1,0 +1,227 @@
+﻿@page "/blazingbacklogpanel"
+@using BlazingPoints.ViewModels
+@using DevExpress.Blazor
+@using MatBlazor
+@using Microsoft.JSInterop
+@using System.Drawing
+@using System.Linq
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inherits BlazingPoints.IndexBase
+
+@if (sprintProgressVm == null)
+{
+    <p class="text-center">
+        <em>@loading</em>
+        <br>
+        <img src="Images/496.gif" />
+        <br>
+        Powered by Blazor WebAssembly <img src="Images/BrandBlazor_nohalo_1000x-1small.png" />
+        <br>
+        <a href="https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator" target="_blank">
+            <img src="Images/GitHub-Mark-32px.png" />
+        </a>
+    </p>
+}
+else
+{
+<div>
+    <p class="text-center" style="font-size: x-small;">
+        @*gregt move to css file*@
+        @sprintProgressVm.IterationNumber - @sprintProgressVm.SprintStart.ToShortDateString() - @sprintProgressVm.SprintEnd.ToShortDateString()
+    </p>
+    <DxChart Data="@burndownFigureRollUpVms">
+        <DxChartTooltip>
+            <div class="p-3">
+                <b>
+                    @context.Point.Value
+                    @context.Point.SeriesName
+                </b>
+                <br>
+                @context.Point.Argument
+                @sprintProgressVm.WorkItemRollUpVms.FirstOrDefault(x => x.DayOfSprint == context.Point.Argument.ToString()).AsOfTime
+                @*the above needs to be on a single line to work*@
+            </div>
+        </DxChartTooltip>
+        <DxChartLegend Position="@RelativePosition.Outside"
+                       HorizontalAlignment="@HorizontalAlignment.Left"
+                       VerticalAlignment="@VerticalEdge.Top" />
+        <DxChartLineSeries Name="Ideal remaining"
+                           Color="@Color.Gold"
+                           Filter="@((BurndownFigureRollUpVm s) => s.IdealRemaining != null)"
+                           ArgumentField="@(s => s.DayOfSprint)"
+                           ValueField="@(s => s.IdealRemaining)" />
+        <DxChartLineSeries Name="Actual remaining"
+                           Color="@Color.DarkBlue"
+                           Filter="@((BurndownFigureRollUpVm s) => s.ActualDone != null)"
+                           ArgumentField="@(s => s.DayOfSprint)"
+                           ValueField="@(s => s.ActualRemaining)" />
+    </DxChart>
+
+    <DxChart Data="@workItemRollUpVms">
+        <DxChartTooltip>
+            <div class="p-3">
+                <b>
+                    @context.Point.Value
+                    @context.Point.SeriesName
+                </b>
+                <br>
+                @context.Point.Argument
+                @sprintProgressVm.WorkItemRollUpVms.FirstOrDefault(x => x.DayOfSprint == context.Point.Argument.ToString()).AsOfTime
+                @*the above needs to be on a single line to work*@
+            </div>
+        </DxChartTooltip>
+        <DxChartLegend Position="@RelativePosition.Outside"
+                       HorizontalAlignment="@HorizontalAlignment.Left"
+                       VerticalAlignment="@VerticalEdge.Top" />
+        <DxChartBarSeries Name="Work items volume"
+                          Filter="@((WorkItemRollUpVm s) => s != null)"
+                          ArgumentField="@(s => s.DayOfSprint)"
+                          ValueField="@(s => s.WorkItemsCount)"
+                          Color="@Color.LightBlue">
+        </DxChartBarSeries>
+        <DxChartBarSeries Name="Points total"
+                          Filter="@((WorkItemRollUpVm s) => s != null)"
+                          ArgumentField="@(s => s.DayOfSprint)"
+                          ValueField="@(s => s.TotalPoints)"
+                          Color="@Color.DarkBlue">
+        </DxChartBarSeries>
+    </DxChart>
+
+<p class="text-center">
+    <MatButton OnClick="OpenDialogMarketplace">Marketplace</MatButton>
+    <MatButton OnClick="OpenDialogGithub">Github</MatButton>
+    <MatButton OnClick="OpenDialogRadiator">Glossary</MatButton>
+    <MatButton OnClick="OpenDialogDataCsv">CSV</MatButton>
+    <MatButton OnClick="OpenDialogDataJson">JSON</MatButton>
+    <MatButton OnClick="OpenDialogDataXml">XML</MatButton>
+</p>
+
+<MatDialog @bind-IsOpen="@dialogIsOpenData">
+    <MatDialogTitle>
+        @sprintProgressVm.IterationNumber
+        <MatIconButton Icon="file_copy" OnClick="OnCopyClick"></MatIconButton>
+    </MatDialogTitle>
+    <MatDialogContent>
+        <p>@uiData</p>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatIconButton OnClick="OkClickData" Icon="close"></MatIconButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@dialogIsOpenRadiator">
+    <MatDialogTitle>Radiators</MatDialogTitle>
+    <MatDialogContent>
+        <p>
+            “Information radiator” is a generic term for handwritten, drawn, printed or electronic displays which a team places in a highly visible location, so that all team members as well as passers-by can see the latest information at a glance: count of automated tests, velocity, incident reports, continuous integration status, and so on.
+            <a href="https://www.agilealliance.org/glossary/information-radiators" target="_blank">More...</a>
+        </p>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatIconButton OnClick="OkClickRadiator" Icon="close"></MatIconButton>
+    </MatDialogActions>
+</MatDialog>
+
+@*@debugString*@
+
+</div>
+}
+
+@code
+{
+
+    IQueryable<BurndownFigureRollUpVm> burndownFigureRollUpVms;
+    string debugString { get { return sprintProgressVm.DebugString; } }
+    bool dialogIsOpenData = false;
+    bool dialogIsOpenRadiator = false;
+    string loading;
+    SprintProgressVm sprintProgressVm { get; set; }
+    string uiData { get; set; }
+    IQueryable<WorkItemRollUpVm> workItemRollUpVms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = "Fetching data...";
+        //Console.WriteLine($"VSIX: {navigationManager.Uri}");
+        sprintProgressVm = await SetSprintProgressVm(jsRuntime, navigationManager.Uri);
+        burndownFigureRollUpVms = sprintProgressVm.BurndownFigureRollUpVms.AsQueryable();
+        workItemRollUpVms = sprintProgressVm.WorkItemRollUpVms.AsQueryable();
+        this.StateHasChanged();
+        //Console.WriteLine($"VSIX: {uiData}");
+        await jsRuntime.InvokeVoidAsync("fnImgMeme");
+        loading = string.Empty;
+    }
+
+
+    //gregt move stuff below to indexbase.cs
+
+    public async Task OnCopyClick()
+    {
+        await jsRuntime.InvokeVoidAsync("copyTextToClipboard", uiData);
+    }
+
+    public async Task OpenNewTabAsync(string url)
+    {
+        await jsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    async Task OpenDialogGithub()
+    {
+        await OpenNewTabAsync("https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator");
+    }
+
+    async Task OpenDialogMarketplace()
+    {
+        await OpenNewTabAsync("https://marketplace.visualstudio.com/items?itemName=GregTrevellick.DailySprintMetrics");
+    }
+
+    void OpenDialogDataCsv()
+    {
+        OpenDialogData("csv");//gregt convert string to enum
+    }
+
+    void OpenDialogDataJson()
+    {
+        OpenDialogData("json");
+    }
+
+    void OpenDialogDataXml()
+    {
+        OpenDialogData("xml");
+    }
+
+    void OpenDialogData(string type)
+    {
+        switch (type)
+        {
+            case "csv":
+                uiData = GetUiDataCsv(sprintProgressVm);
+                break;
+            case "json":
+                uiData = GetUiDataJson(sprintProgressVm);
+                break;
+            case "xml":
+                uiData = GetUiDataXml(sprintProgressVm);
+                break;
+        }
+
+        dialogIsOpenData = true;
+    }
+
+    void OpenDialogRadiator()
+    {
+        dialogIsOpenRadiator = true;
+    }
+
+    void OkClickData()
+    {
+        dialogIsOpenData = false;
+    }
+
+    void OkClickRadiator()
+    {
+        dialogIsOpenRadiator = false;
+    }
+
+}
