@@ -26,13 +26,13 @@ namespace BlazingPoints
         private SprintIterationProcessor _sprintIterationProcessor;
         private WorkItemProcessor _workItemProcessor;
 
-        public string GetUiDataJson(SprintProgressVm sprintProgressVm)//gregt convert to property on SprintProgressVm.cs
+        public string GetUiDataJson(SprintProgressVm sprintProgressVm)//TODO convert to property on SprintProgressVm.cs
         {
             var jsonString = JsonConvert.SerializeObject(sprintProgressVm.UiDataObject, Newtonsoft.Json.Formatting.Indented);
             return jsonString;
         }
 
-        public string GetUiDataXml(SprintProgressVm sprintProgressVm)//gregt convert to property on SprintProgressVm.cs
+        public string GetUiDataXml(SprintProgressVm sprintProgressVm)//TODO convert to property on SprintProgressVm.cs
         {
             var xmlSerializer = new XmlSerializer(typeof(UiDataObject));
             
@@ -50,7 +50,7 @@ namespace BlazingPoints
             return xml;
         }
 
-        public string GetUiDataCsv(SprintProgressVm sprintProgressVm)//gregt convert to property on SprintProgressVm.cs
+        public string GetUiDataCsv(SprintProgressVm sprintProgressVm)//TODO convert to property on SprintProgressVm.cs
         {           
             var separatorChar = ',';
 
@@ -366,7 +366,7 @@ namespace BlazingPoints
             workItemIdsJavascriptStringArray = workItemIdsJavascriptStringArray.TrimEnd(',');
             workItemIdsJavascriptStringArray += " ] ";
 
-            //gregt minimise a repeat lookup of same pbi's day after day
+            //TODO? minimise a repeat lookup of same pbi's day after day
             var json = await _jsInterop.GetWorkItemAttributesBatchData(workItemIdsJavascriptStringArray, sprintDateYMDTHMSMSZ);
             return json;
         }
