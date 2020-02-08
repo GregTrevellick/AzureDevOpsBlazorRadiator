@@ -197,7 +197,7 @@ namespace BlazingPoints
             {
                 var exceptionMessage = $"ex.message1 {ex.Message}";
                 Console.WriteLine(exceptionMessage);
-                sprintProgressDto = new SprintProgressDto { IterationNumber = exceptionMessage };//gregt replace exceptionMessage with "An error occured" before going live
+                sprintProgressDto = new SprintProgressDto { IterationNumber = exceptionMessage };
             }
 
             return sprintProgressDto;
