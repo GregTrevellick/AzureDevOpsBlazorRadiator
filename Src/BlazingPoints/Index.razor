@@ -153,9 +153,6 @@ else
         loading = string.Empty;
     }
 
-
-    //gregt move stuff below to indexbase.cs
-
     public async Task OnCopyClick()
     {
         await jsRuntime.InvokeVoidAsync("copyTextToClipboard", uiData);
