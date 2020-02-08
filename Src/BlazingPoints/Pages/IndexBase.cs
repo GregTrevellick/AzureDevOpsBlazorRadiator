@@ -24,7 +24,6 @@ namespace BlazingPoints
 
         private JsInterop _jsInterop;
         private SprintIterationProcessor _sprintIterationProcessor;
-        private bool _testMode;
         private WorkItemProcessor _workItemProcessor;
 
         public string GetUiDataJson(SprintProgressVm sprintProgressVm)//gregt convert to property on SprintProgressVm.cs
@@ -86,29 +85,137 @@ namespace BlazingPoints
             _sprintIterationProcessor = new SprintIterationProcessor();
             _workItemProcessor = new WorkItemProcessor();
             SprintProgressDto sprintProgressDto;
-            SprintProgressVm sprintProgressVm;
 
             if (uri.Contains("localhost"))
             {
-                _testMode = true;
+                sprintProgressDto = GetSprintProgressDtoTest();
             }
             else
             {
-                _testMode = false;
+                sprintProgressDto = await GetSprintProgressDtoLive();
             }
 
-            if (_testMode)
-            {
-                #region gregt extract
-                var now = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
-                var i = -4;
+            var sprintProgressVm = GetSprintProgressVm(sprintProgressDto);
 
-                sprintProgressDto = new SprintProgressDto
+            //do not delete the following DEBUG line!
+            //sprintProgressVm.DebugString = JsonConvert.SerializeObject(sprintProgressDto, Formatting.Indented); 
+
+            return sprintProgressVm;
+        }
+
+        private async Task<SprintProgressDto> GetSprintProgressDtoLive()
+        {
+            SprintProgressDto sprintProgressDto;
+                
+            try
+            {
+                //get the sprint start end dates json response
+                var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
+
+                //deserialize to a poco
+                sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
+
+                //loop thru each of the 10 sprint days
+                for (var sprintDateWithoutTime = sprintProgressDto.SprintStart;
+                     sprintDateWithoutTime <= sprintProgressDto.SprintEnd;
+                     sprintDateWithoutTime = sprintDateWithoutTime.AddDays(1))
                 {
-                    IterationNumber = "Sprint 177",
-                    SprintEnd = now.AddDays(14),
-                    SprintStart = now.Date.AddDays(i),
-                    WorkItemDtos = new List<WorkItemDto>
+                    if (sprintDateWithoutTime.DayOfWeek != DayOfWeek.Saturday &&
+                        sprintDateWithoutTime.DayOfWeek != DayOfWeek.Sunday)
+                    {
+                        var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
+
+                        //get work item ids (json response) in the sprint on this specific date
+                        var workItemJson = await GetWorkItemJson(sprintDateWithTime);
+
+                        //set up date format
+                        var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
+                        //Console.WriteLine($"VSIX: {sprintDateYMDTHMSMSZ}");
+
+                        //deserialize to a list of ids/urls for that date
+                        var workItemsInSprintOnSprintDate = _workItemProcessor.GetWorkItemsByJson(workItemJson).ToList();
+
+                        if (workItemsInSprintOnSprintDate == null || workItemsInSprintOnSprintDate.Count == 0)
+                        {
+                            //handle zero work items on day zero/one of the sprint (or on dates in the future) as the first (aka "zeroth") day of sprint seems to return zero work items e.g. if sprint starts on 10th Jan
+                            var workItemDto = new WorkItemDto
+                            {
+                                AsOf = sprintDateWithTime
+                            };
+
+                            InitialiseWorkItemDtos(sprintProgressDto);
+
+                            sprintProgressDto.WorkItemDtos.Add(workItemDto);
+                        }
+                        else
+                        {
+                            //from the list of ids/urls for that date create a list of just the ids (for later use in getting effort, state, etc for a batch of PBIs)
+                            var workItemIds = new List<int>();
+
+                            foreach (var workItemInSprintOnSprintDate in workItemsInSprintOnSprintDate)
+                            {
+                                //exclude certain ids to prevent this response fromn the api {"$id":"1","innerException":null,"message":"TF401232: Work item 27142 does not exist, or you do not have permissions to read it.","typeName":"Microsoft.TeamFoundation.WorkItemTracking.Server.WorkItemUnauthorizedAccessException, Microsoft.TeamFoundation.WorkItemTracking.Server","typeKey":"WorkItemUnauthorizedAccessException","errorCode":0,"eventId":3200}
+                                if (workItemInSprintOnSprintDate.id != 27142)
+                                {
+                                    workItemIds.Add(workItemInSprintOnSprintDate.id);
+                                }
+                            }
+
+                            //get effort, state, etc (json response) for the batch of PBIs in the sprint on this specific date
+                            var workItemsAttributesJsons = await GetWorkItemAttributesJsonByBatch(workItemIds, sprintDateYMDTHMSMSZ);
+
+                            //deserialise to batchesRootobject
+                            var batchesRootobjectFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
+
+                            var totalMicrosoftVSTSSchedulingEffort = batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingEffort.HasValue);
+                            var totalMicrosoftVSTSSchedulingStoryPoints = batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingStoryPoints.HasValue);
+                            var useEffort = totalMicrosoftVSTSSchedulingEffort && !totalMicrosoftVSTSSchedulingStoryPoints;
+
+                            var batchesRootobjectValue = GetLivingWorkItems(batchesRootobjectFull);
+
+                            InitialiseWorkItemDtos(sprintProgressDto);
+
+                            foreach (var batchvalue in batchesRootobjectValue)
+                            {
+                                var effort = GetEffort(useEffort, batchvalue);
+
+                                var workItemDto = new WorkItemDto
+                                {
+                                    AsOf = sprintDateWithTime,
+                                    Effort = effort,
+                                    Id = batchvalue.id,
+                                    State = batchvalue.fields.SystemState
+                                };
+
+                                sprintProgressDto.WorkItemDtos.Add(workItemDto);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var exceptionMessage = $"ex.message1 {ex.Message}";
+                Console.WriteLine(exceptionMessage);
+                sprintProgressDto = new SprintProgressDto { IterationNumber = exceptionMessage };//gregt replace exceptionMessage with "An error occured" before going live
+            }
+
+            return sprintProgressDto;
+        }
+
+        private static SprintProgressDto GetSprintProgressDtoTest()
+        {
+            SprintProgressDto sprintProgressDto;
+
+            var now = DateTime.Now.Date.AddDays(-1).AddHours(22).AddMinutes(59).AddSeconds(59);
+            var i = -4;
+
+            sprintProgressDto = new SprintProgressDto
+            {
+                IterationNumber = "Sprint 177",
+                SprintEnd = now.AddDays(14),
+                SprintStart = now.Date.AddDays(i),
+                WorkItemDtos = new List<WorkItemDto>
                     {
                         // Day 1
                         new WorkItemDto { AsOf = now.AddDays(i+0), Effort = 100, Id = 1, State = "approved" },
@@ -147,137 +254,43 @@ namespace BlazingPoints
 
                         new WorkItemDto { AsOf = now.AddDays(i+10), Effort = 100, Id = 1, State = "approved" },
                         new WorkItemDto { AsOf = now.AddDays(i+10), Effort = 100, Id = 1, State = "done" },
-                    }
-                };
 
-                for (int j = 0; j < 22; j++)
-                {
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 0), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 1), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 2), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 3), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 4), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 5), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 6), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 7), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 8), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 9), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 10), Effort = 0, Id = 1, State = "approved" });
-                }
+                        new WorkItemDto { AsOf = now.AddDays(i+11), Effort = 100, Id = 1, State = "approved" },
+                        new WorkItemDto { AsOf = now.AddDays(i+11), Effort = 100, Id = 1, State = "done" },
 
-                //4 work items added in final days of sprint
-                for (int k = 0; k < 4; k++)
-                {
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 8), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 9), Effort = 0, Id = 1, State = "approved" });
-                    sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 10), Effort = 0, Id = 1, State = "approved" });
+                        new WorkItemDto { AsOf = now.AddDays(i+12), Effort = 100, Id = 1, State = "approved" },
+                        new WorkItemDto { AsOf = now.AddDays(i+12), Effort = 100, Id = 1, State = "done" },
                 }
-                #endregion
-            }
-            else
+            };
+
+            for (int j = 0; j < 22; j++)
             {
-                #region gregt extract
-                try
-                {
-                    //get the sprint start end dates json response
-                    var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
-
-                    //deserialize to a poco
-                    sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
-
-                    //loop thru each of the 10 sprint days
-                    for (var sprintDateWithoutTime = sprintProgressDto.SprintStart;
-                         sprintDateWithoutTime <= sprintProgressDto.SprintEnd;
-                         sprintDateWithoutTime = sprintDateWithoutTime.AddDays(1))
-                    {
-                        if (sprintDateWithoutTime.DayOfWeek != DayOfWeek.Saturday &&
-                            sprintDateWithoutTime.DayOfWeek != DayOfWeek.Sunday)
-                        {
-                            var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
-
-                            //get work item ids (json response) in the sprint on this specific date
-                            var workItemJson = await GetWorkItemJson(sprintDateWithTime);
-
-                            //set up date format
-                            var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
-                            //Console.WriteLine($"VSIX: {sprintDateYMDTHMSMSZ}");
-
-                            //deserialize to a list of ids/urls for that date
-                            var workItemsInSprintOnSprintDate = _workItemProcessor.GetWorkItemsByJson(workItemJson).ToList();
-
-                            if (workItemsInSprintOnSprintDate == null || workItemsInSprintOnSprintDate.Count == 0)
-                            {
-                                //handle zero work items on day zero/one of the sprint (or on dates in the future) as the first (aka "zeroth") day of sprint seems to return zero work items e.g. if sprint starts on 10th Jan
-                                var workItemDto = new WorkItemDto
-                                {
-                                    AsOf = sprintDateWithTime
-                                };
-
-                                InitialiseWorkItemDtos(sprintProgressDto);
-
-                                sprintProgressDto.WorkItemDtos.Add(workItemDto);
-                            }
-                            else
-                            {
-                                //from the list of ids/urls for that date create a list of just the ids (for later use in getting effort, state, etc for a batch of PBIs)
-                                var workItemIds = new List<int>();
-
-                                foreach (var workItemInSprintOnSprintDate in workItemsInSprintOnSprintDate)
-                                {
-                                    //exclude certain ids to prevent this response fromn the api {"$id":"1","innerException":null,"message":"TF401232: Work item 27142 does not exist, or you do not have permissions to read it.","typeName":"Microsoft.TeamFoundation.WorkItemTracking.Server.WorkItemUnauthorizedAccessException, Microsoft.TeamFoundation.WorkItemTracking.Server","typeKey":"WorkItemUnauthorizedAccessException","errorCode":0,"eventId":3200}
-                                    if (workItemInSprintOnSprintDate.id != 27142)
-                                    {
-                                        workItemIds.Add(workItemInSprintOnSprintDate.id);
-                                    }
-                                }
-
-                                //get effort, state, etc (json response) for the batch of PBIs in the sprint on this specific date
-                                var workItemsAttributesJsons = await GetWorkItemAttributesJsonByBatch(workItemIds, sprintDateYMDTHMSMSZ);
-
-                                //deserialise to batchesRootobject
-                                var batchesRootobjectFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
-
-                                var totalMicrosoftVSTSSchedulingEffort = batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingEffort.HasValue);
-                                var totalMicrosoftVSTSSchedulingStoryPoints = batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingStoryPoints.HasValue);
-                                var useEffort = totalMicrosoftVSTSSchedulingEffort && !totalMicrosoftVSTSSchedulingStoryPoints;
-
-                                var batchesRootobjectValue = GetLivingWorkItems(batchesRootobjectFull);
-
-                                InitialiseWorkItemDtos(sprintProgressDto);
-
-                                foreach (var batchvalue in batchesRootobjectValue)
-                                {
-                                    var effort = GetEffort(useEffort, batchvalue);
-
-                                    var workItemDto = new WorkItemDto
-                                    {
-                                        AsOf = sprintDateWithTime,
-                                        Effort = effort,
-                                        Id = batchvalue.id,
-                                        State = batchvalue.fields.SystemState
-                                    };
-
-                                    sprintProgressDto.WorkItemDtos.Add(workItemDto);
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    var exceptionMessage = $"ex.message1 {ex.Message}";
-                    Console.WriteLine(exceptionMessage);
-                    sprintProgressDto = new SprintProgressDto { IterationNumber = exceptionMessage };//gregt replace exceptionMessage with "An error occured" before going live
-                }
-                #endregion
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 0), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 1), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 2), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 3), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 4), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 5), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 6), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 7), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 8), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 9), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 10), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 11), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 12), Effort = 0, Id = 1, State = "approved" });
             }
 
-            sprintProgressVm = GetSprintProgressVm(sprintProgressDto);
+            //4 work items added in final days of sprint
+            for (int k = 0; k < 4; k++)
+            {
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 8), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 9), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 10), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 11), Effort = 0, Id = 1, State = "approved" });
+                sprintProgressDto.WorkItemDtos.Add(new WorkItemDto { AsOf = now.AddDays(i + 12), Effort = 0, Id = 1, State = "approved" });
+            }
 
-            //do not delete the following DEBUG line!
-            //sprintProgressVm.DebugString = JsonConvert.SerializeObject(sprintProgressDto, Formatting.Indented); 
-
-            return sprintProgressVm;
+            return sprintProgressDto;
         }
 
         private static IEnumerable<Value> GetLivingWorkItems(batchesRootobject batchesRootobjectFull)
