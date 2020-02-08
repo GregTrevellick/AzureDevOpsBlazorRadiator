@@ -54,7 +54,7 @@ namespace BlazingPoints
         {           
             var separatorChar = ',';
 
-            var csv = $"{sprintProgressVm.UiDataObject.IterationDetails.Iteration}{separatorChar}{sprintProgressVm.UiDataObject.IterationDetails.Start}{separatorChar}{sprintProgressVm.UiDataObject.IterationDetails.End}{separatorChar}";
+            var csv = $"{sprintProgressVm.UiDataObject.IterationDetails.Iteration}{separatorChar}{sprintProgressVm.UiDataObject.IterationDetails.Start}{separatorChar}{sprintProgressVm.UiDataObject.IterationDetails.End}{Environment.NewLine}";
             
             var csvFileDescription = new CsvFileDescription
             {

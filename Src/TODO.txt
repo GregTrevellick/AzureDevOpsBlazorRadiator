@@ -1,6 +1,4 @@
-
 add gif to readme
-csv line break
 try using basic templates FAILS WITH 'TODO' & 'DOING' STATE
 try using cmmi templates EFFORT/SIZE should be size or original estimate
 
@@ -8,7 +6,6 @@ https://khalidabuhakmeh.com/convert-a-csharp-object-to-almost-any-format
 prettify xml/json/csv in the ui itself 
 dark theme (vss.init applyTheme: true)
 add to badge magic / readme badges
-scan for gregt
 add unit tests
 Pbis in > 1 sprint count
 Change iteration number
