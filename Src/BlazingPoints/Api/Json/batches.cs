@@ -42,5 +42,11 @@ namespace BlazingPoints.Api.Json2
 
         [JsonProperty("Microsoft.VSTS.Scheduling.Effort")]
         public float? MicrosoftVSTSSchedulingEffort { get; set; }
+
+        [JsonProperty("Microsoft.VSTS.Scheduling.OriginalEstimate")]
+        public float? MicrosoftVSTSSchedulingOriginalEstimate { get; set; }
+
+        [JsonProperty("Microsoft.VSTS.Scheduling.Size")]
+        public float? MicrosoftVSTSSchedulingSize { get; set; }
     }
 }

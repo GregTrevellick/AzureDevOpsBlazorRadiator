@@ -1,6 +1,5 @@
 add gif to readme
 try using basic templates FAILS WITH 'TODO' & 'DOING' STATE
-try using cmmi templates EFFORT/SIZE should be size or original estimate
 
 https://khalidabuhakmeh.com/convert-a-csharp-object-to-almost-any-format
 prettify xml/json/csv in the ui itself 

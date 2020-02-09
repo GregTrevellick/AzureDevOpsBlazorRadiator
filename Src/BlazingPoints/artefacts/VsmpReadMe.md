@@ -8,11 +8,11 @@ Highlights any agile anti-patterns in your processes.
 
 Works for these standard templates out-of-the-box:
 - Agile
+- CMMI 
 - Scrum
 
 Coming soon
 - Basic
-- CMMI 
 
 ![](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/blob/master/Src/BlazingPoints/artefacts/Screenshot2.png?raw=true)
 
