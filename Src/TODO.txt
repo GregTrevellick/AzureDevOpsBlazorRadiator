@@ -13,3 +13,17 @@ message when burndown hits zero "go home your job is done"
 https://danielcwilson.com/blog/2020/01/motion-path-quirks/
 https://css-tricks.com/css-animation-libraries/
 https://css-tricks.com/almanac/properties/o/offset-path/
+
+
+
+
+
+
+FROM STACKOVERFLOW QUESTION
+cd "C:\_git\BlazorVsixStackOverflowQuestion\Src\BlazorVsixStackOverflowQuestion"
+rem publish the app to \bin....\dist\_framework
+dotnet clean 
+dotnet publish -c Release -o C:\_git\BlazorVsixStackOverflowQuestion\Src\BlazorVsixStackOverflowQuestion\bin\Debug\netstandard2.0\publish\
+cd "C:\_git\BlazorVsixStackOverflowQuestion\Src\BlazorVsixStackOverflowQuestion\bin\Debug\netstandard2.0\publish\"
+rem generate the vsix itself
+tfx extension create --rev-version --manifest-globs vss-extension.json
