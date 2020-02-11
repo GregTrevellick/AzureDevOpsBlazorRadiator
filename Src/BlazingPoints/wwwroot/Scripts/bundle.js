@@ -40,6 +40,9 @@ function fetchTheIterationData() {
                         })
                             .then((responseSprintData) => {
                                 jsonResponseSprintData = JSON.stringify(responseSprintData, null, 4);
+
+                                //https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/processes/get?view=azure-devops-rest-5.1#examples
+
                                 resolveA(jsonResponseSprintData);
                             });
                     });
@@ -59,6 +62,71 @@ async function handleGetIterationData() {
     }
     //console.log("VSIX: iAdoData=" + iAdoData);
     return iAdoData;
+}
+
+/* WORK ITEM PROCESS DATA */
+function fetchTheWorkItemProcessForProjectData() {
+    return new Promise((resolveAA, rejectAA) => {
+        var jsonResponseWorkItemProcessData = "";
+        var requestUrlGetProjId = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + vsoContextProjectName + "?api-version=5.1";
+        ///////////////////////////////////https://dev.azure.com/gregtrevellick/_apis/projects/FooBarScrum?api-version=5.1
+        $.ajax({
+            dataType: "json",
+            headers: { "Authorization": authHeader },
+            type: "GET",
+            url: requestUrlGetProjId
+        })
+            .then((responseWorkItemProcessData) => {
+                var projId = responseWorkItemProcessData.id;
+                resolveAA(jsonResponseWorkItemProcessData);
+            });
+    });
+}
+function fetchTheWorkItemProcessForProjectDataFallback() {
+    return "fallback_blah1b";//todo should return a promise!
+}
+async function handleGetWorkItemProcessForProjectData() {
+    let wipAdoData;
+    try {
+        wipAdoData = await fetchTheWorkItemProcessForProjectData();
+    }
+    catch (e) {
+        wipAdoData = await fetchTheWorkItemProcessForProjectDataFallback();
+    }
+    console.log("VSIX: wipAdoData=" + wipAdoData);
+    return wipAdoData;
+}
+
+/* WORK ITEM PROCESS DATA 2 */
+function fetchTheWorkItemProcessForProjectData2(projId2) {
+    return new Promise((resolveAA2, rejectAA2) => {
+        var jsonResponseWorkItemProcessData2 = "";
+        var requestUrlGetProjId2 = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projId2 + "/properties?api-version=5.1-preview.1";
+        $.ajax({
+            dataType: "json",
+            headers: { "Authorization": authHeader },
+            type: "GET",
+            url: requestUrlGetProjId2
+        })
+            .then((responseWorkItemProcessData2) => {
+                jsonResponseWorkItemProcessData2 = JSON.stringify(responseWorkItemProcessData2, null, 4);
+                resolveAA2(jsonResponseWorkItemProcessData2);
+            });
+    });
+}
+function fetchTheWorkItemProcessForProjectDataFallback2(projId2) {
+    return "fallback2_blah1b" + projId2;//todo should return a promise!
+}
+async function handleGetWorkItemProcessForProjectData2(projId2) {
+    let wipAdoData2;
+    try {
+        wipAdoData2 = await fetchTheWorkItemProcessForProjectData2(projId2);
+    }
+    catch (e) {
+        wipAdoData2 = await fetchTheWorkItemProcessForProjectDataFallback2(projId2);
+    }
+    console.log("VSIX: wipAdoData2=" + wipAdoData2);
+    return wipAdoData2;
 }
 
 /* WORK ITEM DATA */
@@ -117,9 +185,9 @@ function fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) 
     });
 }
 function fetchTheWorkItemAttributesBatchDataFallback(workItemIds, sprintDateYMDTHMSMSZ) {
-    return "fallback_blah3" + workItemIds + " " + sprintDateYMDTHMSMSZ;//todo should return a promise!
+    return "fallback_blah3";//todo should return a promise!
 }
-async function handleGetWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) {
+async function handleGetWorkItemAttributesBatchData(workItemIds) {
     let wiabAdoData;
     try {
         wiabAdoData = await fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ);
@@ -133,7 +201,7 @@ async function handleGetWorkItemAttributesBatchData(workItemIds, sprintDateYMDTH
 
 (function () {
     var baseIframeUrl = location.href.replace("index.min.html", "");
-    console.log("VSIX: biu=" + baseIframeUrl);
+    //console.log("VSIX: biu=" + baseIframeUrl);
     var baseElement = document.createElement('base');
     baseElement.href = baseIframeUrl;
     document.head.appendChild(baseElement);

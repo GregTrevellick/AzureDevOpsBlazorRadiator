@@ -112,6 +112,9 @@ namespace BlazingPoints
                 //get the sprint start end dates json response
                 var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
 
+                var workItemProcessForProjectDataJson = GetWorkItemProcessForProjectDataJson();
+                Console.WriteLine("_____________________________" + workItemProcessForProjectDataJson);
+
                 //deserialize to a poco
                 sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
 
@@ -424,6 +427,12 @@ namespace BlazingPoints
         private async Task<string> GetTeamSettingsIterationsJson()
         {
             var json = await _jsInterop.GetIterationData();
+            return json;
+        }
+
+        private async Task<string> GetWorkItemProcessForProjectDataJson()
+        {
+            var json = await _jsInterop.GetWorkItemProcessForProjectData();
             return json;
         }
 

@@ -26,6 +26,7 @@
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
     <Content Remove="vss-extension.json" />
+    <Content Remove="vss-extension.private.json" />
     <Content Remove="wwwroot\Images\3d-computer-graphics-3-d-man-dry-erase-boards-clip-art-3d-white-man-thumb.jpg" />
     <Content Remove="wwwroot\Images\a3b516326d716bca147690d00fb4842e.jpg" />
     <Content Remove="wwwroot\Images\BrandBlazor_nohalo_1000x-1.png" />
