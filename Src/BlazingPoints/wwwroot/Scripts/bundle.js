@@ -77,7 +77,7 @@ function fetchTheWorkItemProcessForProjectData() {
             url: requestUrlGetProjId
         })
             .then((responseWorkItemProcessData) => {
-                var projId = responseWorkItemProcessData.id;
+                jsonResponseWorkItemProcessData = JSON.stringify(responseWorkItemProcessData, null, 4);
                 resolveAA(jsonResponseWorkItemProcessData);
             });
     });

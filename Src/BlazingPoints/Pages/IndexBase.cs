@@ -112,8 +112,31 @@ namespace BlazingPoints
                 //get the sprint start end dates json response
                 var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
 
-                var workItemProcessForProjectDataJson = GetWorkItemProcessForProjectDataJson();
-                Console.WriteLine("_____________________________" + workItemProcessForProjectDataJson);
+                //get the project type
+                var workItemProcessForProjectDataJson = await GetWorkItemProcessForProjectDataJson();
+                var aaaProjIdRootobject = JsonConvert.DeserializeObject<aaaProjIdRootobject>(workItemProcessForProjectDataJson);
+                Console.WriteLine("|||||||||||||||||||aaaProjIdRootobject.projId="+ aaaProjIdRootobject.projId);
+
+                var workItemProcessForProjectDataJson2 = await GetWorkItemProcessForProjectDataJson2(aaaProjIdRootobject.projId);
+                var bbbProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.bbbProjPropertiesRootobject>(workItemProcessForProjectDataJson2);
+                var systemProcessTemplate = bbbProjPropertiesRootobject.value.FirstOrDefault(x => x.name == "System.Process Template");//.Select(x => x.value);
+                Console.WriteLine("|||||||||||||||||||systemProcessTemplate.value=" + systemProcessTemplate.value);
+
+                switch (systemProcessTemplate.value)
+                {
+                    case "Agile":
+                        //gregt check exact string to match on
+                        break;
+                    case "Basic":
+                        //gregt check exact string to match on
+                        break;
+                    case "CMMI":
+                        //gregt check exact string to match on
+                        break;
+                    case "Scrum":
+                        //this is a scrum
+                        break;
+                }
 
                 //deserialize to a poco
                 sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
@@ -433,6 +456,12 @@ namespace BlazingPoints
         private async Task<string> GetWorkItemProcessForProjectDataJson()
         {
             var json = await _jsInterop.GetWorkItemProcessForProjectData();
+            return json;
+        }
+
+        private async Task<string> GetWorkItemProcessForProjectDataJson2(string projId)
+        {
+            var json = await _jsInterop.GetWorkItemProcessForProjectData2(projId);
             return json;
         }
 
