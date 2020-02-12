@@ -2,7 +2,7 @@
 
 namespace BlazingPoints.Api.Json2.ProjProperties.ccc
 {
-    public class cccProjPropertiesRootobject
+    public class cccProjPropertiesRootobject//gregt rename
     {
         [JsonIgnore]
         public int count { get; set; }

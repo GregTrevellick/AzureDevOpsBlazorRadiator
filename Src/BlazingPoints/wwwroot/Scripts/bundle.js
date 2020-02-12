@@ -103,6 +103,7 @@ async function handleGetWorkItemProcessForProjectData() {
 }
 
 /* WORK ITEM PROCESS DATA 2 */
+//gregt rename
 function fetchTheWorkItemProcessForProjectData2(projId2) {
     return new Promise((resolveAA2, rejectAA2) => {
         var jsonResponseWorkItemProcessData2 = "";
@@ -135,6 +136,7 @@ async function handleGetWorkItemProcessForProjectData2(projId2) {
 }
 
 /* WORK ITEM PROCESS DATA 3 */
+//gregt rename
 function fetchTheWorkItemProcessForProjectData3() {
     return new Promise((resolveAA2, rejectAA2) => {
         var jsonResponseWorkItemProcessData3 = "";
@@ -165,7 +167,6 @@ async function handleGetWorkItemProcessForProjectData3() {
     console.log("VSIX: wipAdoData3=" + wipAdoData3);
     return wipAdoData3;
 }
-
 
 /* WORK ITEM DATA */
 function fetchTheWorkItemData(sprintDate) {

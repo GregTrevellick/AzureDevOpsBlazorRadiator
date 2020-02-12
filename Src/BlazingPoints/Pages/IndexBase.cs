@@ -1,6 +1,7 @@
 ﻿using BlazingPoints.Api;
 using BlazingPoints.Api.DTOs;
 using BlazingPoints.Api.Json2;
+using BlazingPoints.Api.Json2.ProjProperties.ccc;
 using BlazingPoints.Api.Processors;
 using BlazingPoints.ViewModels;
 using LINQtoCSV;
@@ -112,46 +113,21 @@ namespace BlazingPoints
                 //get the sprint start end dates json response
                 var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
 
-                //get the project type
+                //get the project id
                 var workItemProcessForProjectDataJson = await GetWorkItemProcessForProjectDataJson();
                 var aaaProjIdRootobject = JsonConvert.DeserializeObject<aaaProjIdRootobject>(workItemProcessForProjectDataJson);
-                Console.WriteLine("|||||||||||||||||||aaaProjIdRootobject.projId="+ aaaProjIdRootobject.projId);
 
+                //get template id for project id
                 var workItemProcessForProjectDataJson2 = await GetWorkItemProcessForProjectDataJson2(aaaProjIdRootobject.projId);
                 var bbbProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.bbbProjPropertiesRootobject>(workItemProcessForProjectDataJson2);
                 var systemProcessTemplateType = bbbProjPropertiesRootobject.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
-                Console.WriteLine("|||||||||||||||||||systemProcessTemplate.value=" + systemProcessTemplateType.value);
 
+                //get list of all project types
                 var workItemProcessForProjectDataJson3 = await GetWorkItemProcessForProjectDataJson3();
                 var cccProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.ccc.cccProjPropertiesRootobject>(workItemProcessForProjectDataJson3);
                 var systemProcessTemplateType3 = cccProjPropertiesRootobject.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
-                Console.WriteLine("###############systemProcessTemplateType3.name=" + systemProcessTemplateType3.name);
 
-                //
-
-                ProjType projType;
-                switch (systemProcessTemplateType3.name)
-                {
-                    case "Agile":
-                        //gregt check exact string to match on
-                        projType = ProjType.Agile;
-                        break;
-                    case "Basic":
-                        //gregt check exact string to match on
-                        projType = ProjType.Basic;
-                        break;
-                    case "CMMI":
-                        //gregt check exact string to match on
-                        projType = ProjType.Cmmi;
-                        break;
-                    case "Scrum":
-                        //this is a scrum
-                        projType = ProjType.Scrum;
-                        break;
-                    default:
-                        //use effort hierachically
-                        break;
-                }
+                var projType = GetProjType(systemProcessTemplateType3.name);
 
                 //deserialize to a poco
                 sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
@@ -207,7 +183,7 @@ namespace BlazingPoints
 
                             //deserialise to batchesRootobject
                             var batchesRootobjectFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
-                            
+
                             var effortType = GetEffortType(batchesRootobjectFull);
 
                             var batchesRootobjectValue = GetLivingWorkItems(batchesRootobjectFull);
@@ -240,6 +216,32 @@ namespace BlazingPoints
             }
 
             return sprintProgressDto;
+        }
+
+        private static ProjType GetProjType(string systemProcessTemplateType3name)
+        {
+            ProjType projType;
+
+            switch (systemProcessTemplateType3name.ToLower())
+            {
+                case "agile":
+                    projType = ProjType.Agile;
+                    break;
+                case "basic":
+                    projType = ProjType.Basic;
+                    break;
+                case "cmmi":
+                    projType = ProjType.Cmmi;
+                    break;
+                case "scrum":
+                    projType = ProjType.Scrum;
+                    break;
+                default:
+                    projType = ProjType.Unknown;
+                    break;
+            }
+            
+            return projType;
         }
 
         private static EffortType GetEffortType(batchesRootobject batchesRootobjectFull)
@@ -374,7 +376,7 @@ namespace BlazingPoints
             return sprintProgressDto;
         }
 
-        private static IEnumerable<Value> GetLivingWorkItems(batchesRootobject batchesRootobjectFull)
+        private static IEnumerable<Api.Json2.Value> GetLivingWorkItems(batchesRootobject batchesRootobjectFull)
         {
             return batchesRootobjectFull.value.Where(x =>
                 x.fields.SystemState.ToLower() != "failed" &&
@@ -390,7 +392,7 @@ namespace BlazingPoints
             }
         }
 
-        private float? GetEffort(EffortType effortType, Value batchvalue)
+        private float? GetEffort(EffortType effortType, Api.Json2.Value batchvalue)
         {
             float? effort;
 

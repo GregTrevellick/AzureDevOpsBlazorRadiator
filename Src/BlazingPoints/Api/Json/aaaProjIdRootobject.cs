@@ -3,7 +3,7 @@ using System;
 
 namespace BlazingPoints.Api.Json2
 {
-    public class aaaProjIdRootobject
+    public class aaaProjIdRootobject//gregt rename
     {
         [JsonProperty("id")]
         public string projId { get; set; }
