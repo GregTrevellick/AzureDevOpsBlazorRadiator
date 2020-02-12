@@ -122,6 +122,39 @@ async function handleGetWorkItemProcessForProjectData2(projId2) {
     return wipAdoData2;
 }
 
+/* WORK ITEM PROCESS DATA 3 */
+function fetchTheWorkItemProcessForProjectData3() {
+    return new Promise((resolveAA2, rejectAA2) => {
+        var jsonResponseWorkItemProcessData3 = "";
+        var requestUrlGetProjId3 = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/work/processes?api-version=5.1-preview.2";
+        $.ajax({
+            dataType: "json",
+            headers: { "Authorization": authHeader },
+            type: "GET",
+            url: requestUrlGetProjId3
+        })
+            .then((responseWorkItemProcessData3) => {
+                jsonResponseWorkItemProcessData3 = JSON.stringify(responseWorkItemProcessData3, null, 4);
+                resolveAA2(jsonResponseWorkItemProcessData3);
+            });
+    });
+}
+function fetchTheWorkItemProcessForProjectDataFallback3() {
+    return "fallback3_blah1b";//todo should return a promise!
+}
+async function handleGetWorkItemProcessForProjectData3() {
+    let wipAdoData3;
+    try {
+        wipAdoData3 = await fetchTheWorkItemProcessForProjectData3();
+    }
+    catch (e) {
+        wipAdoData3 = await fetchTheWorkItemProcessForProjectDataFallback3();
+    }
+    console.log("VSIX: wipAdoData3=" + wipAdoData3);
+    return wipAdoData3;
+}
+
+
 /* WORK ITEM DATA */
 function fetchTheWorkItemData(sprintDate) {
     return new Promise((resolveB, rejectB) => {
@@ -178,9 +211,9 @@ function fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) 
     });
 }
 function fetchTheWorkItemAttributesBatchDataFallback(workItemIds, sprintDateYMDTHMSMSZ) {
-    return "fallback_blah3";//todo should return a promise!
+    return "fallback_blah3" + workItemIds + " " + sprintDateYMDTHMSMSZ;//todo should return a promise!
 }
-async function handleGetWorkItemAttributesBatchData(workItemIds) {
+async function handleGetWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) {
     let wiabAdoData;
     try {
         wiabAdoData = await fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ);

@@ -28,6 +28,11 @@ namespace BlazingPoints.Api
             return await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projId);
         }
 
+        public async Task<string> GetWorkItemProcessForProjectData3()
+        {
+            return await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData3");
+        }
+
         public async Task<string> GetWorkItemData(DateTime sprintDate)
         {
             if (sprintDate >= DateTime.Now)

@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "BlazorRadiator5",
-  "version": "1.0.16",
+  "version": "1.0.21",
   "name": "Blazor Radiator5 Private",
   "publisher": "GregTrevellick",
   "targets": [

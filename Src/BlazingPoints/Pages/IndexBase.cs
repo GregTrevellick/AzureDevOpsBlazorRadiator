@@ -119,22 +119,34 @@ namespace BlazingPoints
 
                 var workItemProcessForProjectDataJson2 = await GetWorkItemProcessForProjectDataJson2(aaaProjIdRootobject.projId);
                 var bbbProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.bbbProjPropertiesRootobject>(workItemProcessForProjectDataJson2);
-                var systemProcessTemplate = bbbProjPropertiesRootobject.value.FirstOrDefault(x => x.name == "System.Process Template");//.Select(x => x.value);
-                Console.WriteLine("|||||||||||||||||||systemProcessTemplate.value=" + systemProcessTemplate.value);
+                var systemProcessTemplateType = bbbProjPropertiesRootobject.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
+                Console.WriteLine("|||||||||||||||||||systemProcessTemplate.value=" + systemProcessTemplateType.value);
 
-                switch (systemProcessTemplate.value)
+                var workItemProcessForProjectDataJson3 = await GetWorkItemProcessForProjectDataJson3();
+                var cccProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.ccc.cccProjPropertiesRootobject>(workItemProcessForProjectDataJson3);
+                var systemProcessTemplateType3 = cccProjPropertiesRootobject.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
+                Console.WriteLine("###############systemProcessTemplateType3.name=" + systemProcessTemplateType3.name);
+
+                //
+
+                ProjType projType;
+                switch (systemProcessTemplateType3.name)
                 {
                     case "Agile":
                         //gregt check exact string to match on
+                        projType = ProjType.Agile;
                         break;
                     case "Basic":
                         //gregt check exact string to match on
+                        projType = ProjType.Basic;
                         break;
                     case "CMMI":
                         //gregt check exact string to match on
+                        projType = ProjType.Cmmi;
                         break;
                     case "Scrum":
                         //this is a scrum
+                        projType = ProjType.Scrum;
                         break;
                     default:
                         //use effort hierachically
@@ -465,6 +477,12 @@ namespace BlazingPoints
         private async Task<string> GetWorkItemProcessForProjectDataJson2(string projId)
         {
             var json = await _jsInterop.GetWorkItemProcessForProjectData2(projId);
+            return json;
+        }
+
+        private async Task<string> GetWorkItemProcessForProjectDataJson3()
+        {
+            var json = await _jsInterop.GetWorkItemProcessForProjectData3();
             return json;
         }
 
