@@ -3,10 +3,10 @@ using System;
 
 namespace BlazingPoints.Api.Json2
 {
-    public class aaaProjIdRootobject//gregt rename
+    public class ProjectDetails
     {
         [JsonProperty("id")]
-        public string projId { get; set; }
+        public string ProjectId { get; set; }
 
         public string name { get; set; }
 

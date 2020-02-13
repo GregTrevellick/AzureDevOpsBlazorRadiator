@@ -2,7 +2,7 @@
 
 namespace BlazingPoints.Api.Json2.ProjProperties.ccc
 {
-    public class cccProjPropertiesRootobject//gregt rename
+    public class workProcesses
     {
         [JsonIgnore]
         public int count { get; set; }
@@ -16,10 +16,17 @@ namespace BlazingPoints.Api.Json2.ProjProperties.ccc
         public string name { get; set; }
         public object referenceName { get; set; }
         public string description { get; set; }
+
+        [JsonIgnore]
         public string parentProcessTypeId { get; set; }
+
+        [JsonIgnore]
         public bool isEnabled { get; set; }
+
+        [JsonIgnore]
         public bool isDefault { get; set; }
+
+        [JsonIgnore]
         public string customizationType { get; set; }
     }
-
 }

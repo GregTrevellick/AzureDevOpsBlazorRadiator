@@ -114,21 +114,21 @@ namespace BlazingPoints
                 var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
 
                 //get the project id
-                var workItemProcessForProjectDataJson = await GetWorkItemProcessForProjectDataJson();
-                var aaaProjIdRootobject = JsonConvert.DeserializeObject<aaaProjIdRootobject>(workItemProcessForProjectDataJson);
+                var projectDetailsDataJson = await GetWorkItemProcessForProjectDataJson();
+                var projectDetails = JsonConvert.DeserializeObject<ProjectDetails>(projectDetailsDataJson);
 
                 //get template id for project id
-                var workItemProcessForProjectDataJson2 = await GetWorkItemProcessForProjectDataJson2(aaaProjIdRootobject.projId);
-                var bbbProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.bbbProjPropertiesRootobject>(workItemProcessForProjectDataJson2);
+                var workItemProcessForProjectDataJson2 = await GetWorkItemProcessForProjectDataJson2(projectDetails.ProjectId);
+                var bbbProjPropertiesRootobject = JsonConvert.DeserializeObject<Api.Json2.ProjProperties.bbbProjPropertiesRootobject>(workItemProcessForProjectDataJson2);
                 var systemProcessTemplateType = bbbProjPropertiesRootobject.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
 
                 //get list of all project types
-                var workItemProcessForProjectDataJson3 = await GetWorkItemProcessForProjectDataJson3();
-                var cccProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.ccc.cccProjPropertiesRootobject>(workItemProcessForProjectDataJson3);
-                var systemProcessTemplateType3 = cccProjPropertiesRootobject.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
+                var workProcessDataJson = await GetWorkProcessDataJson();
+                var workProcesses = JsonConvert.DeserializeObject<workProcesses>(workProcessDataJson);
+                var workProcess = workProcesses.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
 
                 //get the field name containing the effort figure
-                var workItemProcess = GetWorkItemProcess(systemProcessTemplateType3.name);
+                var workItemProcess = GetWorkItemProcess(workProcess.name);
                 var effortType = GetEffortType(workItemProcess);
 
                 //deserialize to a poco
@@ -463,9 +463,9 @@ namespace BlazingPoints
             return json;
         }
 
-        private async Task<string> GetWorkItemProcessForProjectDataJson3()
+        private async Task<string> GetWorkProcessDataJson()
         {
-            var json = await _jsInterop.GetWorkItemProcessForProjectData3();
+            var json = await _jsInterop.GetWorkProcessesData();
             return json;
         }
 

@@ -122,9 +122,8 @@ async function handleGetWorkItemProcessForProjectData2(projId2) {
     return wipAdoData2;
 }
 
-/* WORK ITEM PROCESS DATA 3 */
-//gregt rename
-function fetchTheWorkItemProcessForProjectData3() {
+/* WORK PROCESSES DATA */
+function fetchTheWorkProcessesData() {
     return new Promise((resolveAA2, rejectAA2) => {
         var jsonResponseWorkItemProcessData3 = "";
         var requestUrlGetProjId3 = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/work/processes?api-version=5.1-preview.2";
@@ -140,16 +139,16 @@ function fetchTheWorkItemProcessForProjectData3() {
             });
     });
 }
-function fetchTheWorkItemProcessForProjectDataFallback3() {
+function fetchTheWorkProcessesDataFallback() {
     return "fallback3_blah1b";//todo should return a promise!
 }
-async function handleGetWorkItemProcessForProjectData3() {
+async function handleGetWorkProcessesData() {
     let wipAdoData3;
     try {
-        wipAdoData3 = await fetchTheWorkItemProcessForProjectData3();
+        wipAdoData3 = await fetchTheWorkProcessesData();
     }
     catch (e) {
-        wipAdoData3 = await fetchTheWorkItemProcessForProjectDataFallback3();
+        wipAdoData3 = await fetchTheWorkProcessesDataFallback();
     }
     //console.log("VSIX: wipAdoData3=" + wipAdoData3);
     return wipAdoData3;
