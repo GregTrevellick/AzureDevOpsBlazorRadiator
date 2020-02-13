@@ -6,13 +6,11 @@ Use these [information radiators](https://www.agilealliance.org/glossary/informa
 
 Highlights any agile anti-patterns in your processes.
 
-Works for these standard templates out-of-the-box:
+Works for these default work item processes out-of-the-box:
 - Agile
+- Basic
 - CMMI 
 - Scrum
-
-Coming soon
-- Basic
 
 ![](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/blob/master/Src/BlazingPoints/artefacts/Screenshot2.png?raw=true)
 

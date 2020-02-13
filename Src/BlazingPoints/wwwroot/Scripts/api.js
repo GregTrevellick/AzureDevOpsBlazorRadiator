@@ -1,9 +1,4 @@
-﻿//WASM: ex.message1 sprintDateYMDTHMSMSZ is not defined
-//blazor.webassembly.js: 1 WASM: ReferenceError: sprintDateYMDTHMSMSZ is not defined
-//blazor.webassembly.js: 1 WASM: at handleGetWorkItemAttributesBatchData(https://gregtrevellick.gallerycdn.vsassets.io/extensions/gregtrevellick/blazorradiator5/1.0.16/1581492388058/wwwroot/Scripts/bundle.min.js:1:3692)
-
-
-var authHeader;
+﻿var authHeader;
 var vsoContextAccountName;
 var vsoContextHostUri;
 var vsoContextProjectName;

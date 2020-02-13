@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json2.ProjProperties//gregt fix namespace
+namespace BlazingPoints.Api.Json.ProjectDetail2
 {
     public class ProjectDetail2
     {

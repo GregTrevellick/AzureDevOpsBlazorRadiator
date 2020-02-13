@@ -1,5 +1,8 @@
 ﻿using BlazingPoints.Api;
 using BlazingPoints.Api.DTOs;
+using BlazingPoints.Api.Json.Batches;
+using BlazingPoints.Api.Json.ProjectDetail2;
+using BlazingPoints.Api.Json.ProjectDetails;
 using BlazingPoints.Api.Json2;
 using BlazingPoints.Api.Json2.ProjProperties.ccc;
 using BlazingPoints.Api.Processors;
@@ -119,7 +122,7 @@ namespace BlazingPoints
 
                 //get template id for project id
                 var projectDetails2DataJson = await GetProjectDetails2DataJson(projectDetails.ProjectId);
-                var projectDetail2 = JsonConvert.DeserializeObject<Api.Json2.ProjProperties.ProjectDetail2>(projectDetails2DataJson);
+                var projectDetail2 = JsonConvert.DeserializeObject<ProjectDetail2>(projectDetails2DataJson);
                 var kvp = projectDetail2.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
 
                 //get list of all project types
@@ -190,16 +193,16 @@ namespace BlazingPoints
 
                             InitialiseWorkItemDtos(sprintProgressDto);
 
-                            foreach (var batchvalue in batchesValue)
+                            foreach (var batchValue in batchesValue)
                             {
-                                var effort = GetEffort(effortType, batchvalue);
+                                var effort = GetEffort(effortType, batchValue);
 
                                 var workItemDto = new WorkItemDto
                                 {
                                     AsOf = sprintDateWithTime,
                                     Effort = effort,
-                                    Id = batchvalue.id,
-                                    State = batchvalue.fields.SystemState
+                                    Id = batchValue.id,
+                                    State = batchValue.fields.SystemState
                                 };
 
                                 sprintProgressDto.WorkItemDtos.Add(workItemDto);
@@ -360,7 +363,7 @@ namespace BlazingPoints
             return sprintProgressDto;
         }
 
-        private static IEnumerable<Api.Json2.Value> GetLivingWorkItems(Batches batchesFull)
+        private static IEnumerable<Api.Json.Batches.Value> GetLivingWorkItems(Batches batchesFull)
         {
             return batchesFull.value.Where(x =>
                 x.fields.SystemState.ToLower() != "failed" &&
@@ -376,20 +379,20 @@ namespace BlazingPoints
             }
         }
 
-        private float? GetEffort(EffortType effortType, Api.Json2.Value batchvalue)
+        private float? GetEffort(EffortType effortType, Api.Json.Batches.Value batchValue)
         {
             float? effort;
 
             switch (effortType)
             {
                 case EffortType.Effort:
-                    effort = batchvalue.fields.MicrosoftVSTSSchedulingEffort;
+                    effort = batchValue.fields.MicrosoftVSTSSchedulingEffort;
                     break;
                 case EffortType.StoryPoints:
-                    effort = batchvalue.fields.MicrosoftVSTSSchedulingStoryPoints;
+                    effort = batchValue.fields.MicrosoftVSTSSchedulingStoryPoints;
                     break;
                 case EffortType.Size:
-                    effort = batchvalue.fields.MicrosoftVSTSSchedulingSize;
+                    effort = batchValue.fields.MicrosoftVSTSSchedulingSize;
                     break;
                 default:
                     effort = 0;

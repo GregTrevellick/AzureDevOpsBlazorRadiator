@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "BlazorRadiator5",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "name": "Blazor Radiator5 Private",
   "publisher": "GregTrevellick",
   "targets": [
@@ -59,7 +59,7 @@
         "ms.vss-work-web.iteration-backlog-toolpane"
       ],
       "properties": {
-        "name": "Radiators5 Private",
+        "name": "z Radiators5 Private",
         "title": "Information Radiators",
         "description": "Display burndown chart and work item statistics alongside your backlog",
         "uri": "wwwroot/index.min.html",

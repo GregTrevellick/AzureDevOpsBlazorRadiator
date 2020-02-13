@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json2//gregt fix namespace
+namespace BlazingPoints.Api.Json.Batches
 {
     public class Batches
     {

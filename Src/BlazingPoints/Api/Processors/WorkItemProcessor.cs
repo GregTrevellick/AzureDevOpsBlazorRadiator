@@ -1,4 +1,5 @@
 ﻿using BlazingPoints.Api.Json;
+using BlazingPoints.Api.Json.Batches;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -20,9 +21,9 @@ namespace BlazingPoints.Api.Processors
             }
         }
 
-        public Json2.Batches GetWorkItemAttributesBatchesByJson(string workItemAttributesJson)
+        public Batches GetWorkItemAttributesBatchesByJson(string workItemAttributesJson)
         {
-            return JsonConvert.DeserializeObject<Json2.Batches>(workItemAttributesJson);
+            return JsonConvert.DeserializeObject<Batches>(workItemAttributesJson);
         }
     }
 }
