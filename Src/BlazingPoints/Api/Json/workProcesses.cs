@@ -2,7 +2,7 @@
 
 namespace BlazingPoints.Api.Json2.ProjProperties.ccc
 {
-    public class workProcesses
+    public class WorkProcesses
     {
         [JsonIgnore]
         public int count { get; set; }

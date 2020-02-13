@@ -3,7 +3,7 @@ using System;
 
 namespace BlazingPoints.Api.Json
 {
-    public class workItemAttributesRootobject
+    public class WorkItemAttributes
     {
         public int id { get; set; }
 

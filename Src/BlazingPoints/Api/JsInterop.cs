@@ -18,14 +18,14 @@ namespace BlazingPoints.Api
             return await _jsRuntime.InvokeAsync<string>("handleGetIterationData");
         }
 
-        public async Task<string> GetWorkItemProcessForProjectData()
+        public async Task<string> GetProjectDetailsData()
         {
             return await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData");
         }
 
-        public async Task<string> GetWorkItemProcessForProjectData2(string projId)//gregt rename
+        public async Task<string> GetProjectDetails2Data(string projectId)
         {
-            return await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projId);
+            return await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projectId);
         }
 
         public async Task<string> GetWorkProcessesData()

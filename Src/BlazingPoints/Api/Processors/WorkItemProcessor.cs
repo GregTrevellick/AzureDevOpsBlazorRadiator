@@ -15,14 +15,14 @@ namespace BlazingPoints.Api.Processors
             }
             else
             {
-                var witRootobject = JsonConvert.DeserializeObject<witRootobject>(workItemJson);
-                return witRootobject.workItems;
+                var wit = JsonConvert.DeserializeObject<Wit>(workItemJson);
+                return wit.workItems;
             }
         }
 
-        public Json2.batchesRootobject GetWorkItemAttributesBatchesByJson(string workItemAttributesJson)
+        public Json2.Batches GetWorkItemAttributesBatchesByJson(string workItemAttributesJson)
         {
-            return JsonConvert.DeserializeObject<Json2.batchesRootobject>(workItemAttributesJson);
+            return JsonConvert.DeserializeObject<Json2.Batches>(workItemAttributesJson);
         }
     }
 }

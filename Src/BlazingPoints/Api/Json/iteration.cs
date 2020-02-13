@@ -3,7 +3,7 @@ using System;
 
 namespace BlazingPoints.Api.Json
 {
-    public class iterationRootobject
+    public class Iteration
     {
         [JsonIgnore]
         public int count { get; set; }

@@ -3,7 +3,7 @@ using System;
 
 namespace BlazingPoints.Api.Json
 {
-    public class witRootobject
+    public class Wit
     {
         public string queryType { get; set; }
         public string queryResultType { get; set; }

@@ -114,18 +114,18 @@ namespace BlazingPoints
                 var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
 
                 //get the project id
-                var projectDetailsDataJson = await GetWorkItemProcessForProjectDataJson();
+                var projectDetailsDataJson = await GetProjectDetailsDataJson();
                 var projectDetails = JsonConvert.DeserializeObject<ProjectDetails>(projectDetailsDataJson);
 
                 //get template id for project id
-                var workItemProcessForProjectDataJson2 = await GetWorkItemProcessForProjectDataJson2(projectDetails.ProjectId);
-                var bbbProjPropertiesRootobject = JsonConvert.DeserializeObject<Api.Json2.ProjProperties.bbbProjPropertiesRootobject>(workItemProcessForProjectDataJson2);
-                var systemProcessTemplateType = bbbProjPropertiesRootobject.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
+                var projectDetails2DataJson = await GetProjectDetails2DataJson(projectDetails.ProjectId);
+                var projectDetail2 = JsonConvert.DeserializeObject<Api.Json2.ProjProperties.ProjectDetail2>(projectDetails2DataJson);
+                var kvp = projectDetail2.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
 
                 //get list of all project types
                 var workProcessDataJson = await GetWorkProcessDataJson();
-                var workProcesses = JsonConvert.DeserializeObject<workProcesses>(workProcessDataJson);
-                var workProcess = workProcesses.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
+                var workProcesses = JsonConvert.DeserializeObject<WorkProcesses>(workProcessDataJson);
+                var workProcess = workProcesses.value.FirstOrDefault(x => x.typeId == (string)kvp.value);
 
                 //get the field name containing the effort figure
                 var workItemProcess = GetWorkItemProcess(workProcess.name);
@@ -183,14 +183,14 @@ namespace BlazingPoints
                             //get effort, state, etc (json response) for the batch of PBIs in the sprint on this specific date
                             var workItemsAttributesJsons = await GetWorkItemAttributesJsonByBatch(workItemIds, sprintDateYMDTHMSMSZ);
 
-                            //deserialise to batchesRootobject
-                            var batchesRootobjectFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
+                            //deserialise
+                            var batchesFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
 
-                            var batchesRootobjectValue = GetLivingWorkItems(batchesRootobjectFull);
+                            var batchesValue = GetLivingWorkItems(batchesFull);
 
                             InitialiseWorkItemDtos(sprintProgressDto);
 
-                            foreach (var batchvalue in batchesRootobjectValue)
+                            foreach (var batchvalue in batchesValue)
                             {
                                 var effort = GetEffort(effortType, batchvalue);
 
@@ -360,9 +360,9 @@ namespace BlazingPoints
             return sprintProgressDto;
         }
 
-        private static IEnumerable<Api.Json2.Value> GetLivingWorkItems(batchesRootobject batchesRootobjectFull)
+        private static IEnumerable<Api.Json2.Value> GetLivingWorkItems(Batches batchesFull)
         {
-            return batchesRootobjectFull.value.Where(x =>
+            return batchesFull.value.Where(x =>
                 x.fields.SystemState.ToLower() != "failed" &&
                 x.fields.SystemState.ToLower() != "removed" &&
                 x.fields.SystemState.ToLower() != "to do");
@@ -451,15 +451,15 @@ namespace BlazingPoints
             return json;
         }
 
-        private async Task<string> GetWorkItemProcessForProjectDataJson()
+        private async Task<string> GetProjectDetailsDataJson()
         {
-            var json = await _jsInterop.GetWorkItemProcessForProjectData();
+            var json = await _jsInterop.GetProjectDetailsData();
             return json;
         }
 
-        private async Task<string> GetWorkItemProcessForProjectDataJson2(string projId)
+        private async Task<string> GetProjectDetails2DataJson(string projectId)
         {
-            var json = await _jsInterop.GetWorkItemProcessForProjectData2(projId);
+            var json = await _jsInterop.GetProjectDetails2Data(projectId);
             return json;
         }
 
@@ -508,46 +508,3 @@ namespace BlazingPoints
         }
     }
 }
-
-
-//private static EffortType GetEffortType(batchesRootobject batchesRootobjectFull, ProjType projType)
-//{
-//    EffortType effortType;
-
-//    var totalMicrosoftVSTSSchedulingEffort =
-//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingEffort.HasValue);
-
-//    var totalMicrosoftVSTSSchedulingStoryPoints =
-//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingStoryPoints.HasValue);
-
-//    var totalMicrosoftVSTSSchedulingOriginalEstimate =
-//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingOriginalEstimate.HasValue);
-
-//    var totalMicrosoftVSTSSchedulingSize =
-//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingSize.HasValue);
-
-//    if (totalMicrosoftVSTSSchedulingEffort && !totalMicrosoftVSTSSchedulingStoryPoints)
-//    {
-//        effortType = EffortType.Effort;
-//    }
-//    else
-//    {
-//        if (totalMicrosoftVSTSSchedulingStoryPoints && !totalMicrosoftVSTSSchedulingOriginalEstimate)
-//        {
-//            effortType = EffortType.StoryPoints;
-//        }
-//        else
-//        {
-//            if (totalMicrosoftVSTSSchedulingOriginalEstimate && !totalMicrosoftVSTSSchedulingSize)
-//            {
-//                effortType = EffortType.OriginalEstimate;
-//            }
-//            else
-//            {
-//                effortType = EffortType.Size;
-//            }
-//        }
-//    }
-
-//    return effortType;
-//}

@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json2
+namespace BlazingPoints.Api.Json2//gregt fix namespace
 {
-    public class batchesRootobject
+    public class Batches
     {
         [JsonIgnore]
         public int count { get; set; }

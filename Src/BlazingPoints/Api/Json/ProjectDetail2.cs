@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json2.ProjProperties
+namespace BlazingPoints.Api.Json2.ProjProperties//gregt fix namespace
 {
-    public class bbbProjPropertiesRootobject//gregt rename
+    public class ProjectDetail2
     {
         [JsonIgnore]
         public int count { get; set; }
@@ -15,5 +15,4 @@ namespace BlazingPoints.Api.Json2.ProjProperties
         public string name { get; set; }
         public object value { get; set; }
     }
-
 }
