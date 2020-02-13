@@ -1,26 +1,17 @@
 add gif to readme
-try using basic templates FAILS WITH 'TODO' & 'DOING' STATE  https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/processes/get?view=azure-devops-rest-5.1#examples
- 
 
-add configuration that includes/excludes weekends, set time of day, etc
 https://khalidabuhakmeh.com/convert-a-csharp-object-to-almost-any-format
+add configuration that includes/excludes weekends, set time of day, etc
 dark theme (vss.init applyTheme: true)
 add to badge magic / readme badges
 add unit tests
-Pbis in > 1 sprint count
-Change iteration number
-historic graphs for velocity
-message when burndown hits zero "go home your job is done"
+pbis that have been in > 1 sprint count
+historic graphs for velocity (incl. change iteration number)
 https://danielcwilson.com/blog/2020/01/motion-path-quirks/
 https://css-tricks.com/css-animation-libraries/
 https://css-tricks.com/almanac/properties/o/offset-path/
 
-
-
-
-
-
-FROM STACKOVERFLOW QUESTION
+FROM STACKOVERFLOW QUESTION AUTO PUBLISH TO VSMP
 cd "C:\_git\BlazorVsixStackOverflowQuestion\Src\BlazorVsixStackOverflowQuestion"
 rem publish the app to \bin....\dist\_framework
 dotnet clean 
