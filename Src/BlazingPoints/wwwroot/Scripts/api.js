@@ -92,7 +92,6 @@ async function handleGetWorkItemProcessForProjectData() {
 /* WORK ITEM PROCESS DATA 2. */
 function fetchTheWorkItemProcessForProjectData2(projectId2) {
     return new Promise((resolveAA2, rejectAA2) => {
-console.log("gregt");
         var jsonResponseWorkItemProcessData2 = "";
         var requestUrlGetProjectId2 = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projectId2 + "/properties?api-version=5.1-preview.1";
         $.ajax({
