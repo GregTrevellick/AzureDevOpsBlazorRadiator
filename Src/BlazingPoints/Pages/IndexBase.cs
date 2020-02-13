@@ -128,8 +128,8 @@ namespace BlazingPoints
                 var systemProcessTemplateType3 = cccProjPropertiesRootobject.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
 
                 //get the field name containing the effort figure
-                var projType = GetProjType(systemProcessTemplateType3.name);
-                var effortType = GetEffortType(projType);
+                var workItemProcess = GetWorkItemProcess(systemProcessTemplateType3.name);
+                var effortType = GetEffortType(workItemProcess);
 
                 //deserialize to a poco
                 sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
@@ -218,48 +218,48 @@ namespace BlazingPoints
             return sprintProgressDto;
         }
 
-        private static ProjType GetProjType(string systemProcessTemplateType3name)
+        private static WorkItemProcess GetWorkItemProcess(string systemProcessTemplateType3name)
         {
-            ProjType projType;
+            WorkItemProcess workItemProcess;
 
             switch (systemProcessTemplateType3name.ToLower())
             {
                 case "agile":
-                    projType = ProjType.Agile;
+                    workItemProcess = WorkItemProcess.Agile;
                     break;
                 case "basic":
-                    projType = ProjType.Basic;
+                    workItemProcess = WorkItemProcess.Basic;
                     break;
                 case "cmmi":
-                    projType = ProjType.Cmmi;
+                    workItemProcess = WorkItemProcess.Cmmi;
                     break;
                 case "scrum":
-                    projType = ProjType.Scrum;
+                    workItemProcess = WorkItemProcess.Scrum;
                     break;
                 default:
-                    projType = ProjType.Unknown;
+                    workItemProcess = WorkItemProcess.Unknown;
                     break;
             }
             
-            return projType;
+            return workItemProcess;
         }
 
-        private static EffortType GetEffortType(ProjType projType)
+        private static EffortType GetEffortType(WorkItemProcess workItemProcess)
         {
             EffortType effortType;
 
-            switch (projType)
+            switch (workItemProcess)
             {
-                case ProjType.Agile:
+                case WorkItemProcess.Agile:
                     effortType = EffortType.StoryPoints;
                     break;
-                case ProjType.Basic:
+                case WorkItemProcess.Basic:
                     effortType = EffortType.Effort;
                     break;
-                case ProjType.Cmmi:
+                case WorkItemProcess.Cmmi:
                     effortType = EffortType.Size;
                     break;
-                case ProjType.Scrum:
+                case WorkItemProcess.Scrum:
                     effortType = EffortType.Effort;
                     break;
                 default:

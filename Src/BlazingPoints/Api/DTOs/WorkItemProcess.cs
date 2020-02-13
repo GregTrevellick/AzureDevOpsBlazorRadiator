@@ -1,6 +1,6 @@
 ﻿namespace BlazingPoints.Api.DTOs
 {
-    public enum ProjType//gregt rename
+    public enum WorkItemProcess
     {
         Unknown=0,
         Agile,
