@@ -2,9 +2,9 @@
 {
     public enum EffortType
     {
+        Unknown=0,
         Effort,
         StoryPoints,
-        OriginalEstimate,
         Size,
     }
 }

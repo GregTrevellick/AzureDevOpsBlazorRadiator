@@ -127,7 +127,9 @@ namespace BlazingPoints
                 var cccProjPropertiesRootobject = JsonConvert.DeserializeObject<BlazingPoints.Api.Json2.ProjProperties.ccc.cccProjPropertiesRootobject>(workItemProcessForProjectDataJson3);
                 var systemProcessTemplateType3 = cccProjPropertiesRootobject.value.FirstOrDefault(x => x.typeId == (string)systemProcessTemplateType.value);
 
+                //get the field name containing the effort figure
                 var projType = GetProjType(systemProcessTemplateType3.name);
+                var effortType = GetEffortType(projType);
 
                 //deserialize to a poco
                 sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
@@ -183,8 +185,6 @@ namespace BlazingPoints
 
                             //deserialise to batchesRootobject
                             var batchesRootobjectFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
-
-                            var effortType = GetEffortType(batchesRootobjectFull);
 
                             var batchesRootobjectValue = GetLivingWorkItems(batchesRootobjectFull);
 
@@ -244,45 +244,29 @@ namespace BlazingPoints
             return projType;
         }
 
-        private static EffortType GetEffortType(batchesRootobject batchesRootobjectFull)
+        private static EffortType GetEffortType(ProjType projType)
         {
             EffortType effortType;
-            
-            var totalMicrosoftVSTSSchedulingEffort = 
-                batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingEffort.HasValue);
-            
-            var totalMicrosoftVSTSSchedulingStoryPoints = 
-                batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingStoryPoints.HasValue);
-            
-            var totalMicrosoftVSTSSchedulingOriginalEstimate = 
-                batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingOriginalEstimate.HasValue);
-            
-            var totalMicrosoftVSTSSchedulingSize =
-                batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingSize.HasValue);
 
-            if (totalMicrosoftVSTSSchedulingEffort && !totalMicrosoftVSTSSchedulingStoryPoints)
+            switch (projType)
             {
-                effortType = EffortType.Effort;
-            }
-            else
-            {
-                if (totalMicrosoftVSTSSchedulingStoryPoints && !totalMicrosoftVSTSSchedulingOriginalEstimate)
-                {
+                case ProjType.Agile:
                     effortType = EffortType.StoryPoints;
-                }
-                else
-                {
-                    if (totalMicrosoftVSTSSchedulingOriginalEstimate && !totalMicrosoftVSTSSchedulingSize)
-                    {
-                        effortType = EffortType.OriginalEstimate;
-                    }
-                    else
-                    {
-                        effortType = EffortType.Size;
-                    }
-                }
+                    break;
+                case ProjType.Basic:
+                    effortType = EffortType.Effort;
+                    break;
+                case ProjType.Cmmi:
+                    effortType = EffortType.Size;
+                    break;
+                case ProjType.Scrum:
+                    effortType = EffortType.Effort;
+                    break;
+                default:
+                    effortType = EffortType.Unknown;
+                    break;
             }
-
+            
             return effortType;
         }
 
@@ -404,9 +388,6 @@ namespace BlazingPoints
                 case EffortType.StoryPoints:
                     effort = batchvalue.fields.MicrosoftVSTSSchedulingStoryPoints;
                     break;
-                case EffortType.OriginalEstimate:
-                    effort = batchvalue.fields.MicrosoftVSTSSchedulingOriginalEstimate;
-                    break;
                 case EffortType.Size:
                     effort = batchvalue.fields.MicrosoftVSTSSchedulingSize;
                     break;
@@ -527,3 +508,46 @@ namespace BlazingPoints
         }
     }
 }
+
+
+//private static EffortType GetEffortType(batchesRootobject batchesRootobjectFull, ProjType projType)
+//{
+//    EffortType effortType;
+
+//    var totalMicrosoftVSTSSchedulingEffort =
+//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingEffort.HasValue);
+
+//    var totalMicrosoftVSTSSchedulingStoryPoints =
+//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingStoryPoints.HasValue);
+
+//    var totalMicrosoftVSTSSchedulingOriginalEstimate =
+//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingOriginalEstimate.HasValue);
+
+//    var totalMicrosoftVSTSSchedulingSize =
+//        batchesRootobjectFull.value.Any(x => x.fields.MicrosoftVSTSSchedulingSize.HasValue);
+
+//    if (totalMicrosoftVSTSSchedulingEffort && !totalMicrosoftVSTSSchedulingStoryPoints)
+//    {
+//        effortType = EffortType.Effort;
+//    }
+//    else
+//    {
+//        if (totalMicrosoftVSTSSchedulingStoryPoints && !totalMicrosoftVSTSSchedulingOriginalEstimate)
+//        {
+//            effortType = EffortType.StoryPoints;
+//        }
+//        else
+//        {
+//            if (totalMicrosoftVSTSSchedulingOriginalEstimate && !totalMicrosoftVSTSSchedulingSize)
+//            {
+//                effortType = EffortType.OriginalEstimate;
+//            }
+//            else
+//            {
+//                effortType = EffortType.Size;
+//            }
+//        }
+//    }
+
+//    return effortType;
+//}

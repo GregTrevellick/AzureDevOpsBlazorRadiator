@@ -9,6 +9,7 @@ add to badge magic / readme badges
 add unit tests
 Pbis in > 1 sprint count
 Change iteration number
+historic graphs for velocity
 message when burndown hits zero "go home your job is done"
 https://danielcwilson.com/blog/2020/01/motion-path-quirks/
 https://css-tricks.com/css-animation-libraries/
