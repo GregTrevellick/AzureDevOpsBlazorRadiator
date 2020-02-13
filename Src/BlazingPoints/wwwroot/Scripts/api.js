@@ -89,17 +89,17 @@ async function handleGetWorkItemProcessForProjectData() {
     return wipAdoData;
 }
 
-/* WORK ITEM PROCESS DATA 2 */
-//gregt rename
-function fetchTheWorkItemProcessForProjectData2(projId2) {
+/* WORK ITEM PROCESS DATA 2. */
+function fetchTheWorkItemProcessForProjectData2(projectId2) {
     return new Promise((resolveAA2, rejectAA2) => {
+console.log("gregt");
         var jsonResponseWorkItemProcessData2 = "";
-        var requestUrlGetProjId2 = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projId2 + "/properties?api-version=5.1-preview.1";
+        var requestUrlGetProjectId2 = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projectId2 + "/properties?api-version=5.1-preview.1";
         $.ajax({
             dataType: "json",
             headers: { "Authorization": authHeader },
             type: "GET",
-            url: requestUrlGetProjId2
+            url: requestUrlGetProjectId2
         })
             .then((responseWorkItemProcessData2) => {
                 jsonResponseWorkItemProcessData2 = JSON.stringify(responseWorkItemProcessData2, null, 4);
@@ -107,16 +107,16 @@ function fetchTheWorkItemProcessForProjectData2(projId2) {
             });
     });
 }
-function fetchTheWorkItemProcessForProjectDataFallback2(projId2) {
-    return "fallback2_blah1b" + projId2;//todo should return a promise!
+function fetchTheWorkItemProcessForProjectDataFallback2(projectId2) {
+    return "fallback2_blah1b" + projectId2;//todo should return a promise!
 }
-async function handleGetWorkItemProcessForProjectData2(projId2) {
+async function handleGetWorkItemProcessForProjectData2(projectId2) {
     let wipAdoData2;
     try {
-        wipAdoData2 = await fetchTheWorkItemProcessForProjectData2(projId2);
+        wipAdoData2 = await fetchTheWorkItemProcessForProjectData2(projectId2);
     }
     catch (e) {
-        wipAdoData2 = await fetchTheWorkItemProcessForProjectDataFallback2(projId2);
+        wipAdoData2 = await fetchTheWorkItemProcessForProjectDataFallback2(projectId2);
     }
     //console.log("VSIX: wipAdoData2=" + wipAdoData2);
     return wipAdoData2;
