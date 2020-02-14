@@ -4,7 +4,32 @@ var vsoContextHostUri;
 var vsoContextProjectName;
 var vsoContextTeamName;
 
-/* ITERATION DATA */
+function commonFallback1(arg1, arg2) {
+    return "commonFallback|" + arg1 + "|" + arg2;//todo should return a promise!
+}
+function commonFetch1(scenario, requestUrl) {
+    return new Promise((resolve1, reject1) => {
+        var httpVerb = "";
+        var jsonResponseData = "";
+        switch (scenario) {
+            case "2":
+                httpVerb = "GET";
+                break;
+        }
+        $.ajax({
+            dataType: "json",
+            headers: { "Authorization": authHeader },
+            type: httpVerb,
+            url: requestUrl
+        })
+            .then((responseData) => {
+                jsonResponseData = JSON.stringify(responseData, null, 4);
+                resolve1(jsonResponseData);
+            });
+    });
+}
+
+/* 1 ITERATION DATA */
 function fetchTheIterationData() {
     return new Promise((resolveA, rejectA) => {
         var jsonResponseSprintData = "";
@@ -28,17 +53,11 @@ function fetchTheIterationData() {
                         })
                             .then((responseSprintData) => {
                                 jsonResponseSprintData = JSON.stringify(responseSprintData, null, 4);
-
-                                //https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/processes/get?view=azure-devops-rest-5.1#examples
-
                                 resolveA(jsonResponseSprintData);
                             });
                     });
             });
     });
-}
-function fetchTheIterationDataFallback() {
-    return "fallback_blah1";//todo should return a promise!
 }
 async function handleGetIterationData() {
     let iAdoData;
@@ -46,45 +65,25 @@ async function handleGetIterationData() {
         iAdoData = await fetchTheIterationData(); 
     }
     catch (e) {
-        iAdoData = await fetchTheIterationDataFallback();
+        iAdoData = await commonFallback1();
     }
-    //console.log("VSIX: iAdoData=" + iAdoData);
     return iAdoData;
 }
 
-/* WORK ITEM PROCESS DATA */
-function fetchTheWorkItemProcessForProjectData() {
-    return new Promise((resolveAA, rejectAA) => {
-        var jsonResponseWorkItemProcessData = "";
-        var requestUrlGetProjId = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + vsoContextProjectName + "?api-version=5.1";
-        $.ajax({
-            dataType: "json",
-            headers: { "Authorization": authHeader },
-            type: "GET",
-            url: requestUrlGetProjId
-        })
-            .then((responseWorkItemProcessData) => {
-                jsonResponseWorkItemProcessData = JSON.stringify(responseWorkItemProcessData, null, 4);
-                resolveAA(jsonResponseWorkItemProcessData);
-            });
-    });
-}
-function fetchTheWorkItemProcessForProjectDataFallback() {
-    return "fallback_blah1b";//todo should return a promise!
-}
+/* 2 WORK ITEM PROCESS DATA */
 async function handleGetWorkItemProcessForProjectData() {
     let wipAdoData;
     try {
-        wipAdoData = await fetchTheWorkItemProcessForProjectData();
+        var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + vsoContextProjectName + "?api-version=5.1";
+        wipAdoData = await commonFetch1("2", requestUrl);
     }
     catch (e) {
-        wipAdoData = await fetchTheWorkItemProcessForProjectDataFallback();
+        wipAdoData = await commonFallback1();
     }
-    //console.log("VSIX: wipAdoData=" + wipAdoData);
     return wipAdoData;
 }
 
-/* WORK ITEM PROCESS DATA 2. */
+/* 3 WORK ITEM PROCESS DATA 2. */
 function fetchTheWorkItemProcessForProjectData2(projectId2) {
     return new Promise((resolveAA2, rejectAA2) => {
         var jsonResponseWorkItemProcessData2 = "";
@@ -101,22 +100,18 @@ function fetchTheWorkItemProcessForProjectData2(projectId2) {
             });
     });
 }
-function fetchTheWorkItemProcessForProjectDataFallback2(projectId2) {
-    return "fallback2_blah1b" + projectId2;//todo should return a promise!
-}
 async function handleGetWorkItemProcessForProjectData2(projectId2) {
     let wipAdoData2;
     try {
         wipAdoData2 = await fetchTheWorkItemProcessForProjectData2(projectId2);
     }
     catch (e) {
-        wipAdoData2 = await fetchTheWorkItemProcessForProjectDataFallback2(projectId2);
+        wipAdoData2 = await commonFallback1(projectId2);
     }
-    //console.log("VSIX: wipAdoData2=" + wipAdoData2);
     return wipAdoData2;
 }
 
-/* WORK PROCESSES DATA */
+/* 4 WORK PROCESSES DATA */
 function fetchTheWorkProcessesData() {
     return new Promise((resolveAA2, rejectAA2) => {
         var jsonResponseWorkItemProcessData3 = "";
@@ -133,22 +128,18 @@ function fetchTheWorkProcessesData() {
             });
     });
 }
-function fetchTheWorkProcessesDataFallback() {
-    return "fallback3_blah1b";//todo should return a promise!
-}
 async function handleGetWorkProcessesData() {
     let wipAdoData3;
     try {
         wipAdoData3 = await fetchTheWorkProcessesData();
     }
     catch (e) {
-        wipAdoData3 = await fetchTheWorkProcessesDataFallback();
+        wipAdoData3 = await commonFallback1();
     }
-    //console.log("VSIX: wipAdoData3=" + wipAdoData3);
     return wipAdoData3;
 }
 
-/* WORK ITEM DATA */
+/* 5 WORK ITEM DATA */
 function fetchTheWorkItemData(sprintDate) {
     return new Promise((resolveB, rejectB) => {
         var jsonResponseWorkItemData = "";
@@ -168,22 +159,18 @@ function fetchTheWorkItemData(sprintDate) {
             });
     });
 }
-function fetchTheWorkItemDataFallback(sprintDate) {
-    return "fallback_blah2" + sprintDate;//todo should return a promise!
-}
 async function handleGetWorkItemData(sprintDate) {
     let wiAdoData;
     try {
         wiAdoData = await fetchTheWorkItemData(sprintDate);
     }
     catch (e) {
-        wiAdoData = await fetchTheWorkItemDataFallback(sprintDate);
+        wiAdoData = await commonFallback1(sprintDate);
     }
-    //console.log("VSIX: wiAdoData=" + wiAdoData);
     return wiAdoData;
 }
 
-/* WORK ITEM ATTRIBUTES DATA */
+/* 6 WORK ITEM ATTRIBUTES DATA */
 function fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) {
     return new Promise((resolveC, rejectC) => {
         var jsonResponseWorkItemAttributesBatchData = "";
@@ -203,17 +190,13 @@ function fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) 
             });
     });
 }
-function fetchTheWorkItemAttributesBatchDataFallback(workItemIds, sprintDateYMDTHMSMSZ) {
-    return "fallback_blah3" + workItemIds + " " + sprintDateYMDTHMSMSZ;//todo should return a promise!
-}
 async function handleGetWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) {
     let wiabAdoData;
     try {
         wiabAdoData = await fetchTheWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ);
     }
     catch (e) {
-        wiabAdoData = await fetchTheWorkItemAttributesBatchDataFallback(workItemIds, sprintDateYMDTHMSMSZ);
+        wiabAdoData = await commonFallback1(workItemIds, sprintDateYMDTHMSMSZ);
     }
-    //console.log("VSIX: wiabAdoData=" + wiabAdoData);
     return wiabAdoData;
 }
