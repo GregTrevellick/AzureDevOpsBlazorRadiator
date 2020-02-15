@@ -25,7 +25,7 @@ namespace BlazingPoints
     {
         public IJSRuntime _jsRuntime;
 
-        private JsInterop _jsInterop;
+        //private JsInterop _jsInterop;
         private SprintIterationProcessor _sprintIterationProcessor;
         private WorkItemProcessor _workItemProcessor;
 
@@ -82,9 +82,10 @@ namespace BlazingPoints
             return csv;
         }
 
-        public async Task<SprintProgressVm> SetSprintProgressVm(IJSRuntime _jsRuntime, string uri)
+        public async Task<SprintProgressVm> SetSprintProgressVm(IJSRuntime jsRuntime, string uri)
         {
-            _jsInterop = new JsInterop(_jsRuntime);
+            //_jsInterop = new JsInterop(_jsRuntime);
+            _jsRuntime = jsRuntime;
             _sprintIterationProcessor = new SprintIterationProcessor();
             _workItemProcessor = new WorkItemProcessor();
             SprintProgressDto sprintProgressDto;
@@ -113,19 +114,22 @@ namespace BlazingPoints
             try
             {
                 //get the sprint start end dates json response
-                var teamSettingsIterationsJson = await _jsInterop.GetIterationData();
+                var teamSettingsIterationsJson = await _jsRuntime.InvokeAsync<string>("handleGetIterationData");
 
                 //get the project id
-                var projectDetailsDataJson = await _jsInterop.GetProjectDetailsData();
+                var projectDetailsDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData");
+
                 var projectDetails = JsonConvert.DeserializeObject<ProjectDetails>(projectDetailsDataJson);
 
                 //get template id for project id
-                var projectDetails2DataJson = await _jsInterop.GetProjectDetails2Data(projectDetails.ProjectId);
+                var projectDetails2DataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projectDetails.ProjectId);
+
                 var projectDetail2 = JsonConvert.DeserializeObject<ProjectDetail2>(projectDetails2DataJson);
                 var kvp = projectDetail2.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
 
                 //get list of all project types
-                var workProcessDataJson = await _jsInterop.GetWorkProcessesData();
+                var workProcessDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkProcessesData");
+
                 var workProcesses = JsonConvert.DeserializeObject<WorkProcesses>(workProcessDataJson);
                 var workProcess = workProcesses.value.FirstOrDefault(x => x.typeId == (string)kvp.value);
 
@@ -147,7 +151,7 @@ namespace BlazingPoints
                         var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
 
                         //get work item ids (json response) in the sprint on this specific date
-                        var workItemJson = await _jsInterop.GetWorkItemData(sprintDateWithTime);
+                        var workItemJson = await GetWorkItemData(sprintDateWithTime);
 
                         //set up date format
                         var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
@@ -443,7 +447,8 @@ namespace BlazingPoints
             workItemIdsJavascriptStringArray += " ] ";
 
             //TODO? minimise a repeat lookup of same pbi's day after day
-            var json = await _jsInterop.GetWorkItemAttributesBatchData(workItemIdsJavascriptStringArray, sprintDateYMDTHMSMSZ);
+            var json = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemAttributesBatchData", workItemIdsJavascriptStringArray, sprintDateYMDTHMSMSZ);
+
             return json;
         }
 
@@ -477,6 +482,18 @@ namespace BlazingPoints
                 Id = workItemDto.Id,
                 State = workItemDto.State,
             };
+        }
+
+        private async Task<string> GetWorkItemData(DateTime sprintDate)
+        {
+            if (sprintDate >= DateTime.Now)
+            {
+                return null;
+            }
+            else
+            {
+                return await _jsRuntime.InvokeAsync<string>("handleGetWorkItemData", sprintDate);
+            }
         }
     }
 }
