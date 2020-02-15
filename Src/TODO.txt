@@ -1,4 +1,3 @@
-rename/remove blazor 4 / blazor 5
 add unit tests
 remove 'preview' status
 
