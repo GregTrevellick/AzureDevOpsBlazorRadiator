@@ -16,49 +16,33 @@ var vsoContextHostUri;
 var vsoContextProjectName;
 var vsoContextTeamName;
 
-//gregt remove 1 from fn name suffix
-function commonFallback1(arg1, arg2) {
+function commonFallback(arg1, arg2) {
     return "commonFallback|" + arg1 + "|" + arg2;//todo should return a promise!
 }
-//gregt remove 1 from fn name suffix
-function commonFetch1(httpVerb, requestUrl, requestBody) {
+function commonFetch(httpVerb, requestUrl, requestBody) {
     return new Promise((resolve1, reject1) => {
         var jsonResponseData = "";
-        //if (httpVerb === "GET") {
-        //    $.ajax({
-        //        dataType: "json",
-        //        headers: { "Authorization": authHeader },
-        //        type: httpVerb,
-        //        url: requestUrl
-        //    })
-        //        .then((responseData) => {
-        //            jsonResponseData = JSON.stringify(responseData, null, 4);
-        //            resolve1(jsonResponseData);
-        //        });
-        //}
-        //else {
-            $.ajax({
-                contentType: "application/json",
-                data: requestBody,
-                dataType: "json",
-                headers: { "Authorization": authHeader },
-                type: httpVerb,
-                url: requestUrl
-            })
-                .then((responseData) => {
-                    jsonResponseData = JSON.stringify(responseData, null, 4);
-                    resolve1(jsonResponseData);
-                });
-        //}
+        $.ajax({
+            contentType: "application/json",
+            data: requestBody,
+            dataType: "json",
+            headers: { "Authorization": authHeader },
+            type: httpVerb,
+            url: requestUrl
+        })
+            .then((responseData) => {
+                jsonResponseData = JSON.stringify(responseData, null, 4);
+                resolve1(jsonResponseData);
+            });
     });
 }
 async function CommonFetchCommonData(httpVerb, requestUrl, requestBody) {
     let commonData;
     try {
-        commonData = await commonFetch1(httpVerb, requestUrl, requestBody);
+        commonData = await commonFetch(httpVerb, requestUrl, requestBody);
     }
     catch (e) {
-        commonData = await commonFallback1();
+        commonData = await commonFallback();
     }
     return commonData;
 }
@@ -80,7 +64,7 @@ function fetchTheIterationData() {
                         vsoContextTeamName = vsoContext.team.name;
                         var requestUrl = vsoContextHostUri + vsoContextProjectName + "/" + vsoContextTeamName + "/_apis/work/teamsettings/iterations?$timeframe=Current&api-version=5.1";
 
-                        //replace below with     await commonFetch1("GET", requestUrl);
+                        //replace below with     await commonFetch("GET", requestUrl);
                         $.ajax({
                             dataType: "json",
                             headers: { "Authorization": authHeader },
@@ -101,7 +85,7 @@ async function handleGetIterationData() {
         iAdoData = await fetchTheIterationData(); 
     }
     catch (e) {
-        iAdoData = await commonFallback1();
+        iAdoData = await commonFallback();
     }
     return iAdoData;
 }
