@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace BlazingPoints.Api.Json.ProjectDetails
+namespace BlazingPoints.Api.Json
 {
     public class ProjectDetails
     {
@@ -20,7 +20,8 @@ namespace BlazingPoints.Api.Json.ProjectDetails
         public int revision { get; set; }
 
         [JsonIgnore]
-        public _Links _links { get; set; }
+        [JsonProperty("_links")]
+        public _LinksPD _linksPD { get; set; }
 
         [JsonIgnore]
         public string visibility { get; set; }
@@ -32,10 +33,11 @@ namespace BlazingPoints.Api.Json.ProjectDetails
         public DateTime lastUpdateTime { get; set; }
     }
 
-    public class _Links
+    public class _LinksPD
     {
         [JsonIgnore]
-        public Self self { get; set; }
+        [JsonProperty("self")]
+        public SelfPD selfPD { get; set; }
         
         [JsonIgnore]
         public Collection collection { get; set; }
@@ -44,7 +46,7 @@ namespace BlazingPoints.Api.Json.ProjectDetails
         public Web web { get; set; }
     }
 
-    public class Self
+    public class SelfPD
     {
         [JsonIgnore]
         public string href { get; set; }

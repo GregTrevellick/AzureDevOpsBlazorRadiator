@@ -1,5 +1,4 @@
 ﻿using BlazingPoints.Api.Json;
-using BlazingPoints.Api.Json.Batches;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

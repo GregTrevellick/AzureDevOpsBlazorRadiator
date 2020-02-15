@@ -1,16 +1,17 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json.ProjectDetail2
+namespace BlazingPoints.Api.Json
 {
     public class ProjectDetail2
     {
         [JsonIgnore]
         public int count { get; set; }
 
-        public Value[] value { get; set; }
+        [JsonProperty("value")]
+        public ValuePD2[] valuePD2 { get; set; }
     }
 
-    public class Value
+    public class ValuePD2
     {
         public string name { get; set; }
         public object value { get; set; }

@@ -1,8 +1,5 @@
 ﻿using BlazingPoints.Api.DTOs;
-using BlazingPoints.Api.Json.Batches;
-using BlazingPoints.Api.Json.ProjectDetail2;
-using BlazingPoints.Api.Json.ProjectDetails;
-using BlazingPoints.Api.Json2.ProjProperties.ccc;
+using BlazingPoints.Api.Json;
 using BlazingPoints.Api.Processors;
 using BlazingPoints.ViewModels;
 using LINQtoCSV;
@@ -122,13 +119,13 @@ namespace BlazingPoints
                 var projectDetails2DataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projectDetails.ProjectId);
 
                 var projectDetail2 = JsonConvert.DeserializeObject<ProjectDetail2>(projectDetails2DataJson);
-                var kvp = projectDetail2.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
+                var kvp = projectDetail2.valuePD2.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
 
                 //get list of all project types
                 var workProcessDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkProcessesData");
 
                 var workProcesses = JsonConvert.DeserializeObject<WorkProcesses>(workProcessDataJson);
-                var workProcess = workProcesses.value.FirstOrDefault(x => x.typeId == (string)kvp.value);
+                var workProcess = workProcesses.valueWP.FirstOrDefault(x => x.typeId == (string)kvp.value);
 
                 //get the field name containing the effort figure
                 var workItemProcess = GetWorkItemProcess(workProcess.name);
@@ -202,7 +199,7 @@ namespace BlazingPoints
                                     AsOf = sprintDateWithTime,
                                     Effort = effort,
                                     Id = batchValue.id,
-                                    State = batchValue.fields.SystemState
+                                    State = batchValue.fieldsB.SystemState
                                 };
 
                                 sprintProgressDto.WorkItemDtos.Add(workItemDto);
@@ -363,12 +360,12 @@ namespace BlazingPoints
             return sprintProgressDto;
         }
 
-        private static IEnumerable<Api.Json.Batches.Value> GetLivingWorkItems(Batches batchesFull)
+        private static IEnumerable<ValueB> GetLivingWorkItems(Batches batchesFull)
         {
-            return batchesFull.value.Where(x =>
-                x.fields.SystemState.ToLower() != "failed" &&
-                x.fields.SystemState.ToLower() != "removed" &&
-                x.fields.SystemState.ToLower() != "to do");
+            return batchesFull.valueB.Where(x =>
+                x.fieldsB.SystemState.ToLower() != "failed" &&
+                x.fieldsB.SystemState.ToLower() != "removed" &&
+                x.fieldsB.SystemState.ToLower() != "to do");
         }
 
         private static void InitialiseWorkItemDtos(SprintProgressDto sprintProgressDto)
@@ -379,20 +376,20 @@ namespace BlazingPoints
             }
         }
 
-        private float? GetEffort(EffortType effortType, Api.Json.Batches.Value batchValue)
+        private float? GetEffort(EffortType effortType, ValueB batchValue)
         {
             float? effort;
 
             switch (effortType)
             {
                 case EffortType.Effort:
-                    effort = batchValue.fields.MicrosoftVSTSSchedulingEffort;
+                    effort = batchValue.fieldsB.MicrosoftVSTSSchedulingEffort;
                     break;
                 case EffortType.StoryPoints:
-                    effort = batchValue.fields.MicrosoftVSTSSchedulingStoryPoints;
+                    effort = batchValue.fieldsB.MicrosoftVSTSSchedulingStoryPoints;
                     break;
                 case EffortType.Size:
-                    effort = batchValue.fields.MicrosoftVSTSSchedulingSize;
+                    effort = batchValue.fieldsB.MicrosoftVSTSSchedulingSize;
                     break;
                 default:
                     effort = 0;

@@ -7,11 +7,12 @@ namespace BlazingPoints.Api.Json
     {
         [JsonIgnore]
         public int count { get; set; }
-        
-        public Value[] value { get; set; }
+
+        [JsonProperty("value")]
+        public ValueI[] valueI { get; set; }
     }
 
-    public class Value
+    public class ValueI
     {
         public string id { get; set; }
         

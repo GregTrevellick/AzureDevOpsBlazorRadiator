@@ -1,29 +1,31 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json.Batches
+namespace BlazingPoints.Api.Json
 {
     public class Batches
     {
         [JsonIgnore]
         public int count { get; set; }
 
-        public Value[] value { get; set; }
+        [JsonProperty("value")]
+        public ValueB[] valueB { get; set; }
     }
 
-    public class Value
+    public class ValueB
     {
         public int id { get; set; }
 
         [JsonIgnore]
         public int rev { get; set; }
-        
-        public Fields fields { get; set; }
+
+        [JsonProperty("fields")]
+        public FieldsB fieldsB { get; set; }
         
         [JsonIgnore]
         public string url { get; set; }
     }
 
-    public class Fields
+    public class FieldsB
     {
         [JsonProperty("System.Id")]
         public int SystemId { get; set; }

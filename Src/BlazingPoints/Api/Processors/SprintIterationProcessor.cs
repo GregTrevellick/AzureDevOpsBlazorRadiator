@@ -26,11 +26,11 @@ namespace BlazingPoints.Api.Processors
         private SprintIteration JsonConvertGetSprintIteration(string teamSettingsIterationsJson)
         {
             var iteration = JsonConvert.DeserializeObject<Iteration>(teamSettingsIterationsJson);
-            var sprintIteration = GetSprintIteration(iteration.value.ToList());
+            var sprintIteration = GetSprintIteration(iteration.valueI.ToList());
             return sprintIteration;
         }
 
-        private SprintIteration GetSprintIteration(List<Json.Value> teamSettingsIterations)
+        private SprintIteration GetSprintIteration(List<ValueI> teamSettingsIterations)
         {
             var sprintIteration = new SprintIteration();
 

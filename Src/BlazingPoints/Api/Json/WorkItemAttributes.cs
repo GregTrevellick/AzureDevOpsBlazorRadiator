@@ -10,7 +10,8 @@ namespace BlazingPoints.Api.Json
         [JsonIgnore]
         public int rev { get; set; }
 
-        public Fields fields { get; set; }
+        [JsonProperty("fields")]
+        public FieldsWIA fieldsWIA { get; set; }
 
         [JsonIgnore]
         public _Links2 _links { get; set; }
@@ -19,7 +20,7 @@ namespace BlazingPoints.Api.Json
         public string url { get; set; }
     }
 
-    public class Fields
+    public class FieldsWIA
     {
         [JsonProperty("System.AreaPath")]
         public string SystemAreaPath { get; set; }
@@ -85,7 +86,8 @@ namespace BlazingPoints.Api.Json
         public string url { get; set; }
 
         [JsonIgnore] 
-        public _Links _links { get; set; }
+        [JsonProperty("_links")]
+        public _LinksWIA _linksWIA { get; set; }
 
         [JsonIgnore] 
         public string id { get; set; }
@@ -100,7 +102,7 @@ namespace BlazingPoints.Api.Json
         public string descriptor { get; set; }
     }
 
-    public class _Links
+    public class _LinksWIA
     {
         [JsonIgnore]
         public Avatar avatar { get; set; }
@@ -151,7 +153,8 @@ namespace BlazingPoints.Api.Json
     public class _Links2
     {
         [JsonIgnore]
-        public Self self { get; set; }
+        [JsonProperty("self")]
+        public SelfWIA selfWIA { get; set; }
         
         [JsonIgnore]
         public Workitemrevisions workItemRevisions { get; set; }
@@ -160,7 +163,7 @@ namespace BlazingPoints.Api.Json
         public Parent parent { get; set; }
     }
 
-    public class Self
+    public class SelfWIA
     {
         [JsonIgnore]
         public string href { get; set; }

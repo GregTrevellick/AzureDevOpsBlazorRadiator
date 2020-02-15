@@ -1,16 +1,17 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazingPoints.Api.Json2.ProjProperties.ccc
+namespace BlazingPoints.Api.Json
 {
     public class WorkProcesses
     {
         [JsonIgnore]
         public int count { get; set; }
 
-        public Value[] value { get; set; }
+        [JsonProperty("value")]
+        public ValueWP[] valueWP { get; set; }
     }
 
-    public class Value
+    public class ValueWP
     {
         public string typeId { get; set; }
         public string name { get; set; }
