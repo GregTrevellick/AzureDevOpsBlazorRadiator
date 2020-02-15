@@ -16,26 +16,27 @@ var vsoContextHostUri;
 var vsoContextProjectName;
 var vsoContextTeamName;
 
+//gregt remove 1 from fn name suffix
 function commonFallback1(arg1, arg2) {
     return "commonFallback|" + arg1 + "|" + arg2;//todo should return a promise!
 }
+//gregt remove 1 from fn name suffix
 function commonFetch1(httpVerb, requestUrl, requestBody) {
     return new Promise((resolve1, reject1) => {
         var jsonResponseData = "";
-
-        if (httpVerb === "GET") {
-            $.ajax({
-                dataType: "json",
-                headers: { "Authorization": authHeader },
-                type: httpVerb,
-                url: requestUrl
-            })
-                .then((responseData) => {
-                    jsonResponseData = JSON.stringify(responseData, null, 4);
-                    resolve1(jsonResponseData);
-                });
-        }
-        else {
+        //if (httpVerb === "GET") {
+        //    $.ajax({
+        //        dataType: "json",
+        //        headers: { "Authorization": authHeader },
+        //        type: httpVerb,
+        //        url: requestUrl
+        //    })
+        //        .then((responseData) => {
+        //            jsonResponseData = JSON.stringify(responseData, null, 4);
+        //            resolve1(jsonResponseData);
+        //        });
+        //}
+        //else {
             $.ajax({
                 contentType: "application/json",
                 data: requestBody,
@@ -48,7 +49,7 @@ function commonFetch1(httpVerb, requestUrl, requestBody) {
                     jsonResponseData = JSON.stringify(responseData, null, 4);
                     resolve1(jsonResponseData);
                 });
-        }
+        //}
     });
 }
 async function CommonFetchCommonData(httpVerb, requestUrl, requestBody) {
@@ -77,12 +78,14 @@ function fetchTheIterationData() {
                         vsoContextHostUri = vsoContext.host.uri;
                         vsoContextProjectName = vsoContext.project.name;
                         vsoContextTeamName = vsoContext.team.name;
-                        var requestUrl1 = vsoContextHostUri + vsoContextProjectName + "/" + vsoContextTeamName + "/_apis/work/teamsettings/iterations?$timeframe=Current&api-version=5.1";
+                        var requestUrl = vsoContextHostUri + vsoContextProjectName + "/" + vsoContextTeamName + "/_apis/work/teamsettings/iterations?$timeframe=Current&api-version=5.1";
+
+                        //replace below with     await commonFetch1("GET", requestUrl);
                         $.ajax({
                             dataType: "json",
                             headers: { "Authorization": authHeader },
                             type: "GET",
-                            url: requestUrl1
+                            url: requestUrl
                         })
                             .then((responseSprintData) => {
                                 jsonResponseSprintData = JSON.stringify(responseSprintData, null, 4);
@@ -105,78 +108,36 @@ async function handleGetIterationData() {
 
 /* 2 WORK ITEM PROCESS DATA */
 async function handleGetWorkItemProcessForProjectData() {
-    //let wipAdoData;
-    //try {
-        var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + vsoContextProjectName + "?api-version=5.1";
-        //wipAdoData = await commonFetch1("GET", requestUrl);
-        return await CommonFetchCommonData("GET", requestUrl);
-    //}
-    //catch (e) {
-    //    wipAdoData = await commonFallback1();
-    //}
-    //return wipAdoData;
+    var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + vsoContextProjectName + "?api-version=5.1";
+    return await CommonFetchCommonData("GET", requestUrl);
 }
 
 /* 3 WORK ITEM PROCESS DATA 2. */
 async function handleGetWorkItemProcessForProjectData2(projectId2) {
-    //let wipAdoData2;
-    //try {
-        var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projectId2 + "/properties?api-version=5.1-preview.1";
-    //    wipAdoData2 = await commonFetch1("GET", requestUrl);
-        return await CommonFetchCommonData("GET", requestUrl);
-    //}
-    //catch (e) {
-    //    wipAdoData2 = await commonFallback1(projectId2);
-    //}
-    //return wipAdoData2;
+    var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projectId2 + "/properties?api-version=5.1-preview.1";
+    return await CommonFetchCommonData("GET", requestUrl);
 }
 
 /* 4 WORK PROCESSES DATA */
 async function handleGetWorkProcessesData() {
-    //let wipAdoData3;
-    //try {
-        var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/work/processes?api-version=5.1-preview.2";
-    //    wipAdoData3 = await commonFetch1("GET", requestUrl);
+    var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/work/processes?api-version=5.1-preview.2";
     return await CommonFetchCommonData("GET", requestUrl);
-    //}
-    //catch (e) {
-    //    wipAdoData3 = await commonFallback1();
-    //}
-    //return wipAdoData3;
 }
 
 /* 5 WORK ITEM DATA */
 async function handleGetWorkItemData(sprintDate) {
-    //let wiAdoData;
-    //try {
-        var requestUrl = vsoContextHostUri + vsoContextProjectName + "/_apis/wit/wiql?api-version=5.1";
-        var querySelect = "Select [System.Id] From WorkItems Where [System.TeamProject] = '" + vsoContextProjectName + "' And [System.IterationPath] = @CurrentIteration ASOF '" + sprintDate + "'";
-        var requestBody = JSON.stringify({ "query": querySelect });
-    //    wiAdoData = await commonFetch1("POST", requestUrl, requestBody);
+    var requestUrl = vsoContextHostUri + vsoContextProjectName + "/_apis/wit/wiql?api-version=5.1";
+    var querySelect = "Select [System.Id] From WorkItems Where [System.TeamProject] = '" + vsoContextProjectName + "' And [System.IterationPath] = @CurrentIteration ASOF '" + sprintDate + "'";
+    var requestBody = JSON.stringify({ "query": querySelect });
     return await CommonFetchCommonData("POST", requestUrl, requestBody);
-    //}
-    //catch (e) {
-    //    wiAdoData = await commonFallback1(sprintDate);
-    //}
-    //return wiAdoData;
 }
 
 /* 6 WORK ITEM ATTRIBUTES DATA */
 async function handleGetWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) {
-    //let wiabAdoData;
-    //try {
-        var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/" + vsoContextProjectName + "/_apis/wit/workitemsbatch?api-version=5.1";
-        var requestBody = '{ "ids": ' + workItemIds + ' , "asOf": "' + sprintDateYMDTHMSMSZ + '", "fields": ["System.Id", "System.Title", "System.WorkItemType", "Microsoft.VSTS.Scheduling.StoryPoints", "System.State", "Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.OriginalEstimate", "Microsoft.VSTS.Scheduling.Size" ] }';
-    //    wiabAdoData = await commonFetch1("POST", requestUrl, requestBody);
+    var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/" + vsoContextProjectName + "/_apis/wit/workitemsbatch?api-version=5.1";
+    var requestBody = '{ "ids": ' + workItemIds + ' , "asOf": "' + sprintDateYMDTHMSMSZ + '", "fields": ["System.Id", "System.Title", "System.WorkItemType", "Microsoft.VSTS.Scheduling.StoryPoints", "System.State", "Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.OriginalEstimate", "Microsoft.VSTS.Scheduling.Size" ] }';
     return await CommonFetchCommonData("POST", requestUrl, requestBody);
-    //}
-    //catch (e) {
-    //    wiabAdoData = await commonFallback1(workItemIds, sprintDateYMDTHMSMSZ);
-    //}
-    //return wiabAdoData;
 }
-
-
 
 (function () {
     var baseIframeUrl = location.href.replace("index.min.html", "");

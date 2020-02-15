@@ -4,26 +4,27 @@ var vsoContextHostUri;
 var vsoContextProjectName;
 var vsoContextTeamName;
 
+//gregt remove 1 from fn name suffix
 function commonFallback1(arg1, arg2) {
     return "commonFallback|" + arg1 + "|" + arg2;//todo should return a promise!
 }
+//gregt remove 1 from fn name suffix
 function commonFetch1(httpVerb, requestUrl, requestBody) {
     return new Promise((resolve1, reject1) => {
         var jsonResponseData = "";
-
-        if (httpVerb === "GET") {
-            $.ajax({
-                dataType: "json",
-                headers: { "Authorization": authHeader },
-                type: httpVerb,
-                url: requestUrl
-            })
-                .then((responseData) => {
-                    jsonResponseData = JSON.stringify(responseData, null, 4);
-                    resolve1(jsonResponseData);
-                });
-        }
-        else {
+        //if (httpVerb === "GET") {
+        //    $.ajax({
+        //        dataType: "json",
+        //        headers: { "Authorization": authHeader },
+        //        type: httpVerb,
+        //        url: requestUrl
+        //    })
+        //        .then((responseData) => {
+        //            jsonResponseData = JSON.stringify(responseData, null, 4);
+        //            resolve1(jsonResponseData);
+        //        });
+        //}
+        //else {
             $.ajax({
                 contentType: "application/json",
                 data: requestBody,
@@ -36,7 +37,7 @@ function commonFetch1(httpVerb, requestUrl, requestBody) {
                     jsonResponseData = JSON.stringify(responseData, null, 4);
                     resolve1(jsonResponseData);
                 });
-        }
+        //}
     });
 }
 async function CommonFetchCommonData(httpVerb, requestUrl, requestBody) {
@@ -65,12 +66,14 @@ function fetchTheIterationData() {
                         vsoContextHostUri = vsoContext.host.uri;
                         vsoContextProjectName = vsoContext.project.name;
                         vsoContextTeamName = vsoContext.team.name;
-                        var requestUrl1 = vsoContextHostUri + vsoContextProjectName + "/" + vsoContextTeamName + "/_apis/work/teamsettings/iterations?$timeframe=Current&api-version=5.1";
+                        var requestUrl = vsoContextHostUri + vsoContextProjectName + "/" + vsoContextTeamName + "/_apis/work/teamsettings/iterations?$timeframe=Current&api-version=5.1";
+
+                        //replace below with     await commonFetch1("GET", requestUrl);
                         $.ajax({
                             dataType: "json",
                             headers: { "Authorization": authHeader },
                             type: "GET",
-                            url: requestUrl1
+                            url: requestUrl
                         })
                             .then((responseSprintData) => {
                                 jsonResponseSprintData = JSON.stringify(responseSprintData, null, 4);

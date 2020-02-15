@@ -448,31 +448,31 @@ namespace BlazingPoints
             return json;
         }
 
-        private async Task<string> GetTeamSettingsIterationsJson()
+        private async Task<string> GetTeamSettingsIterationsJson()//gregt call _jsInterop.Xxxxx() direct
         {
             var json = await _jsInterop.GetIterationData();
             return json;
         }
 
-        private async Task<string> GetProjectDetailsDataJson()
+        private async Task<string> GetProjectDetailsDataJson()//gregt call _jsInterop.Xxxxx() direct
         {
             var json = await _jsInterop.GetProjectDetailsData();
             return json;
         }
 
-        private async Task<string> GetProjectDetails2DataJson(string projectId)
+        private async Task<string> GetProjectDetails2DataJson(string projectId)//gregt call _jsInterop.Xxxxx() direct
         {
             var json = await _jsInterop.GetProjectDetails2Data(projectId);
             return json;
         }
 
-        private async Task<string> GetWorkProcessDataJson()
+        private async Task<string> GetWorkProcessDataJson()//gregt call _jsInterop.Xxxxx() direct
         {
             var json = await _jsInterop.GetWorkProcessesData();
             return json;
         }
 
-        private async Task<string> GetWorkItemJson(DateTime sprintDate)
+        private async Task<string> GetWorkItemJson(DateTime sprintDate)//gregt call _jsInterop.Xxxxx() direct
         {
             var json = await _jsInterop.GetWorkItemData(sprintDate);
             return json;
