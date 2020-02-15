@@ -1,5 +1,4 @@
-﻿using BlazingPoints.Api;
-using BlazingPoints.Api.DTOs;
+﻿using BlazingPoints.Api.DTOs;
 using BlazingPoints.Api.Json.Batches;
 using BlazingPoints.Api.Json.ProjectDetail2;
 using BlazingPoints.Api.Json.ProjectDetails;
@@ -25,7 +24,6 @@ namespace BlazingPoints
     {
         public IJSRuntime _jsRuntime;
 
-        //private JsInterop _jsInterop;
         private SprintIterationProcessor _sprintIterationProcessor;
         private WorkItemProcessor _workItemProcessor;
 
@@ -84,7 +82,6 @@ namespace BlazingPoints
 
         public async Task<SprintProgressVm> SetSprintProgressVm(IJSRuntime jsRuntime, string uri)
         {
-            //_jsInterop = new JsInterop(_jsRuntime);
             _jsRuntime = jsRuntime;
             _sprintIterationProcessor = new SprintIterationProcessor();
             _workItemProcessor = new WorkItemProcessor();
