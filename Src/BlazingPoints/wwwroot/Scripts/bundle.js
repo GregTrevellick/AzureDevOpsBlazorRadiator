@@ -16,10 +16,10 @@ var vsoContextHostUri;
 var vsoContextProjectName;
 var vsoContextTeamName;
 
-function commonFallback(arg1, arg2) {
-    return "commonFallback|" + arg1 + "|" + arg2;//todo should return a promise!
+function CommonFallback(arg1, arg2) {
+    return "CommonFallback|" + arg1 + "|" + arg2;//todo should return a promise!
 }
-function commonFetch(httpVerb, requestUrl, requestBody) {
+function CommonFetch(httpVerb, requestUrl, requestBody) {
     return new Promise((resolve1, reject1) => {
         var jsonResponseData = "";
         $.ajax({
@@ -39,10 +39,10 @@ function commonFetch(httpVerb, requestUrl, requestBody) {
 async function CommonFetchCommonData(httpVerb, requestUrl, requestBody) {
     let commonData;
     try {
-        commonData = await commonFetch(httpVerb, requestUrl, requestBody);
+        commonData = await CommonFetch(httpVerb, requestUrl, requestBody);
     }
     catch (e) {
-        commonData = await commonFallback();
+        commonData = await CommonFallback();
     }
     return commonData;
 }
@@ -63,8 +63,6 @@ function fetchTheIterationData() {
                         vsoContextProjectName = vsoContext.project.name;
                         vsoContextTeamName = vsoContext.team.name;
                         var requestUrl = vsoContextHostUri + vsoContextProjectName + "/" + vsoContextTeamName + "/_apis/work/teamsettings/iterations?$timeframe=Current&api-version=5.1";
-
-                        //replace below with     await commonFetch("GET", requestUrl);
                         $.ajax({
                             dataType: "json",
                             headers: { "Authorization": authHeader },
@@ -82,10 +80,10 @@ function fetchTheIterationData() {
 async function handleGetIterationData() {
     let iAdoData;
     try {
-        iAdoData = await fetchTheIterationData(); 
+        iAdoData = await fetchTheIterationData();
     }
     catch (e) {
-        iAdoData = await commonFallback();
+        iAdoData = await CommonFallback();
     }
     return iAdoData;
 }
