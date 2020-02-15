@@ -3,7 +3,6 @@ using BlazingPoints.Api.DTOs;
 using BlazingPoints.Api.Json.Batches;
 using BlazingPoints.Api.Json.ProjectDetail2;
 using BlazingPoints.Api.Json.ProjectDetails;
-using BlazingPoints.Api.Json2;
 using BlazingPoints.Api.Json2.ProjProperties.ccc;
 using BlazingPoints.Api.Processors;
 using BlazingPoints.ViewModels;
