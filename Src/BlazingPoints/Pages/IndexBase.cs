@@ -114,19 +114,19 @@ namespace BlazingPoints
             try
             {
                 //get the sprint start end dates json response
-                var teamSettingsIterationsJson = await GetTeamSettingsIterationsJson();
+                var teamSettingsIterationsJson = await _jsInterop.GetIterationData();
 
                 //get the project id
-                var projectDetailsDataJson = await GetProjectDetailsDataJson();
+                var projectDetailsDataJson = await _jsInterop.GetProjectDetailsData();
                 var projectDetails = JsonConvert.DeserializeObject<ProjectDetails>(projectDetailsDataJson);
 
                 //get template id for project id
-                var projectDetails2DataJson = await GetProjectDetails2DataJson(projectDetails.ProjectId);
+                var projectDetails2DataJson = await _jsInterop.GetProjectDetails2Data(projectDetails.ProjectId);
                 var projectDetail2 = JsonConvert.DeserializeObject<ProjectDetail2>(projectDetails2DataJson);
                 var kvp = projectDetail2.value.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
 
                 //get list of all project types
-                var workProcessDataJson = await GetWorkProcessDataJson();
+                var workProcessDataJson = await _jsInterop.GetWorkProcessesData();
                 var workProcesses = JsonConvert.DeserializeObject<WorkProcesses>(workProcessDataJson);
                 var workProcess = workProcesses.value.FirstOrDefault(x => x.typeId == (string)kvp.value);
 
@@ -148,7 +148,7 @@ namespace BlazingPoints
                         var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
 
                         //get work item ids (json response) in the sprint on this specific date
-                        var workItemJson = await GetWorkItemJson(sprintDateWithTime);
+                        var workItemJson = await _jsInterop.GetWorkItemData(sprintDateWithTime);
 
                         //set up date format
                         var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
@@ -445,36 +445,6 @@ namespace BlazingPoints
 
             //TODO? minimise a repeat lookup of same pbi's day after day
             var json = await _jsInterop.GetWorkItemAttributesBatchData(workItemIdsJavascriptStringArray, sprintDateYMDTHMSMSZ);
-            return json;
-        }
-
-        private async Task<string> GetTeamSettingsIterationsJson()//gregt call _jsInterop.Xxxxx() direct
-        {
-            var json = await _jsInterop.GetIterationData();
-            return json;
-        }
-
-        private async Task<string> GetProjectDetailsDataJson()//gregt call _jsInterop.Xxxxx() direct
-        {
-            var json = await _jsInterop.GetProjectDetailsData();
-            return json;
-        }
-
-        private async Task<string> GetProjectDetails2DataJson(string projectId)//gregt call _jsInterop.Xxxxx() direct
-        {
-            var json = await _jsInterop.GetProjectDetails2Data(projectId);
-            return json;
-        }
-
-        private async Task<string> GetWorkProcessDataJson()//gregt call _jsInterop.Xxxxx() direct
-        {
-            var json = await _jsInterop.GetWorkProcessesData();
-            return json;
-        }
-
-        private async Task<string> GetWorkItemJson(DateTime sprintDate)//gregt call _jsInterop.Xxxxx() direct
-        {
-            var json = await _jsInterop.GetWorkItemData(sprintDate);
             return json;
         }
 
