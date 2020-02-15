@@ -51,6 +51,16 @@ function commonFetch1(httpVerb, requestUrl, requestBody) {
         }
     });
 }
+async function CommonFetchCommonData(httpVerb, requestUrl, requestBody) {
+    let commonData;
+    try {
+        commonData = await commonFetch1(httpVerb, requestUrl, requestBody);
+    }
+    catch (e) {
+        commonData = await commonFallback1();
+    }
+    return commonData;
+}
 
 /* 1 ITERATION DATA */
 function fetchTheIterationData() {
@@ -95,71 +105,78 @@ async function handleGetIterationData() {
 
 /* 2 WORK ITEM PROCESS DATA */
 async function handleGetWorkItemProcessForProjectData() {
-    let wipAdoData;
-    try {
+    //let wipAdoData;
+    //try {
         var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + vsoContextProjectName + "?api-version=5.1";
-        wipAdoData = await commonFetch1("GET", requestUrl);
-    }
-    catch (e) {
-        wipAdoData = await commonFallback1();
-    }
-    return wipAdoData;
+        //wipAdoData = await commonFetch1("GET", requestUrl);
+        return await CommonFetchCommonData("GET", requestUrl);
+    //}
+    //catch (e) {
+    //    wipAdoData = await commonFallback1();
+    //}
+    //return wipAdoData;
 }
 
 /* 3 WORK ITEM PROCESS DATA 2. */
 async function handleGetWorkItemProcessForProjectData2(projectId2) {
-    let wipAdoData2;
-    try {
+    //let wipAdoData2;
+    //try {
         var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/projects/" + projectId2 + "/properties?api-version=5.1-preview.1";
-        wipAdoData2 = await commonFetch1("GET", requestUrl);
-    }
-    catch (e) {
-        wipAdoData2 = await commonFallback1(projectId2);
-    }
-    return wipAdoData2;
+    //    wipAdoData2 = await commonFetch1("GET", requestUrl);
+        return await CommonFetchCommonData("GET", requestUrl);
+    //}
+    //catch (e) {
+    //    wipAdoData2 = await commonFallback1(projectId2);
+    //}
+    //return wipAdoData2;
 }
 
 /* 4 WORK PROCESSES DATA */
 async function handleGetWorkProcessesData() {
-    let wipAdoData3;
-    try {
+    //let wipAdoData3;
+    //try {
         var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/_apis/work/processes?api-version=5.1-preview.2";
-        wipAdoData3 = await commonFetch1("GET", requestUrl);
-    }
-    catch (e) {
-        wipAdoData3 = await commonFallback1();
-    }
-    return wipAdoData3;
+    //    wipAdoData3 = await commonFetch1("GET", requestUrl);
+    return await CommonFetchCommonData("GET", requestUrl);
+    //}
+    //catch (e) {
+    //    wipAdoData3 = await commonFallback1();
+    //}
+    //return wipAdoData3;
 }
 
 /* 5 WORK ITEM DATA */
 async function handleGetWorkItemData(sprintDate) {
-    let wiAdoData;
-    try {
+    //let wiAdoData;
+    //try {
         var requestUrl = vsoContextHostUri + vsoContextProjectName + "/_apis/wit/wiql?api-version=5.1";
         var querySelect = "Select [System.Id] From WorkItems Where [System.TeamProject] = '" + vsoContextProjectName + "' And [System.IterationPath] = @CurrentIteration ASOF '" + sprintDate + "'";
         var requestBody = JSON.stringify({ "query": querySelect });
-        wiAdoData = await commonFetch1("POST", requestUrl, requestBody);
-    }
-    catch (e) {
-        wiAdoData = await commonFallback1(sprintDate);
-    }
-    return wiAdoData;
+    //    wiAdoData = await commonFetch1("POST", requestUrl, requestBody);
+    return await CommonFetchCommonData("POST", requestUrl, requestBody);
+    //}
+    //catch (e) {
+    //    wiAdoData = await commonFallback1(sprintDate);
+    //}
+    //return wiAdoData;
 }
 
 /* 6 WORK ITEM ATTRIBUTES DATA */
 async function handleGetWorkItemAttributesBatchData(workItemIds, sprintDateYMDTHMSMSZ) {
-    let wiabAdoData;
-    try {
+    //let wiabAdoData;
+    //try {
         var requestUrl = "https://dev.azure.com/" + vsoContextAccountName + "/" + vsoContextProjectName + "/_apis/wit/workitemsbatch?api-version=5.1";
         var requestBody = '{ "ids": ' + workItemIds + ' , "asOf": "' + sprintDateYMDTHMSMSZ + '", "fields": ["System.Id", "System.Title", "System.WorkItemType", "Microsoft.VSTS.Scheduling.StoryPoints", "System.State", "Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.OriginalEstimate", "Microsoft.VSTS.Scheduling.Size" ] }';
-        wiabAdoData = await commonFetch1("POST", requestUrl, requestBody);
-    }
-    catch (e) {
-        wiabAdoData = await commonFallback1(workItemIds, sprintDateYMDTHMSMSZ);
-    }
-    return wiabAdoData;
+    //    wiabAdoData = await commonFetch1("POST", requestUrl, requestBody);
+    return await CommonFetchCommonData("POST", requestUrl, requestBody);
+    //}
+    //catch (e) {
+    //    wiabAdoData = await commonFallback1(workItemIds, sprintDateYMDTHMSMSZ);
+    //}
+    //return wiabAdoData;
 }
+
+
 
 (function () {
     var baseIframeUrl = location.href.replace("index.min.html", "");
