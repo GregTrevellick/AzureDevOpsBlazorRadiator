@@ -185,7 +185,7 @@ namespace BlazingPoints
                             var workItemsAttributesJsons = await GetWorkItemAttributesJsonByBatch(workItemIds, sprintDateYMDTHMSMSZ);
 
                             //deserialise
-                            var batchesFull = _workItemProcessor.GetWorkItemAttributesBatchesByJson(workItemsAttributesJsons);
+                            var batchesFull = JsonConvert.DeserializeObject<Batches>(workItemsAttributesJsons);
 
                             var batchesValue = GetLivingWorkItems(batchesFull);
 

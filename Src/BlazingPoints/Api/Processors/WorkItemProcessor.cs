@@ -19,10 +19,5 @@ namespace BlazingPoints.Api.Processors
                 return wit.workItems;
             }
         }
-
-        public Batches GetWorkItemAttributesBatchesByJson(string workItemAttributesJson)
-        {
-            return JsonConvert.DeserializeObject<Batches>(workItemAttributesJson);
-        }
     }
 }
