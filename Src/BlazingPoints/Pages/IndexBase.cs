@@ -57,9 +57,7 @@ namespace BlazingPoints
             
             var csvFileDescription = new CsvFileDescription
             {
-                SeparatorChar = separatorChar,// '\t', // tab delimited
-                //FirstLineHasColumnNames = false, // no column names in first record
-                //FileCultureName = "nl-NL" // use formats used in The Netherlands
+                SeparatorChar = separatorChar,// '\t' for tab delimited
                 UseOutputFormatForParsingCsvValue = true
             };
 
@@ -108,32 +106,9 @@ namespace BlazingPoints
                 
             try
             {
-                //get the sprint start end dates json response
-                var teamSettingsIterationsJson = await _jsRuntime.InvokeAsync<string>("handleGetIterationData");
-
-                //get the project id
-                var projectDetailsDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData");
-
-                var projectDetails = JsonConvert.DeserializeObject<ProjectDetails>(projectDetailsDataJson);
-
-                //get template id for project id
-                var projectDetails2DataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projectDetails.ProjectId);
-
-                var projectDetail2 = JsonConvert.DeserializeObject<ProjectDetail2>(projectDetails2DataJson);
-                var kvp = projectDetail2.valuePD2.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
-
-                //get list of all project types
-                var workProcessDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkProcessesData");
-
-                var workProcesses = JsonConvert.DeserializeObject<WorkProcesses>(workProcessDataJson);
-                var workProcess = workProcesses.valueWP.FirstOrDefault(x => x.typeId == (string)kvp.value);
-
-                //get the field name containing the effort figure
-                var workItemProcess = GetWorkItemProcess(workProcess.name);
-                var effortType = GetEffortType(workItemProcess);
-
-                //deserialize to a poco
-                sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
+                var data = await GatherData();
+                var effortType = data.Item1;
+                sprintProgressDto = data.Item2;
 
                 //loop thru each of the 10 sprint days
                 for (var sprintDateWithoutTime = sprintProgressDto.SprintStart;
@@ -169,40 +144,13 @@ namespace BlazingPoints
                         }
                         else
                         {
-                            //from the list of ids/urls for that date create a list of just the ids (for later use in getting effort, state, etc for a batch of PBIs)
-                            var workItemIds = new List<int>();
-
-                            foreach (var workItemInSprintOnSprintDate in workItemsInSprintOnSprintDate)
-                            {
-                                //exclude certain ids to prevent this response fromn the api {"$id":"1","innerException":null,"message":"TF401232: Work item 27142 does not exist, or you do not have permissions to read it.","typeName":"Microsoft.TeamFoundation.WorkItemTracking.Server.WorkItemUnauthorizedAccessException, Microsoft.TeamFoundation.WorkItemTracking.Server","typeKey":"WorkItemUnauthorizedAccessException","errorCode":0,"eventId":3200}
-                                if (workItemInSprintOnSprintDate.id != 27142)
-                                {
-                                    workItemIds.Add(workItemInSprintOnSprintDate.id);
-                                }
-                            }
-
-                            //get effort, state, etc (json response) for the batch of PBIs in the sprint on this specific date
-                            var workItemsAttributesJsons = await GetWorkItemAttributesJsonByBatch(workItemIds, sprintDateYMDTHMSMSZ);
-
-                            //deserialise
-                            var batchesFull = JsonConvert.DeserializeObject<Batches>(workItemsAttributesJsons);
-
-                            var batchesValue = GetLivingWorkItems(batchesFull);
+                            var valueBs = await GetValueBsFromWorkitems(sprintDateYMDTHMSMSZ, workItemsInSprintOnSprintDate);
 
                             InitialiseWorkItemDtos(sprintProgressDto);
 
-                            foreach (var batchValue in batchesValue)
+                            foreach (var valueB in valueBs)
                             {
-                                var effort = GetEffort(effortType, batchValue);
-
-                                var workItemDto = new WorkItemDto
-                                {
-                                    AsOf = sprintDateWithTime,
-                                    Effort = effort,
-                                    Id = batchValue.id,
-                                    State = batchValue.fieldsB.SystemState
-                                };
-
+                                var workItemDto = GetWorkItemDto(effortType, sprintDateWithTime, valueB);
                                 sprintProgressDto.WorkItemDtos.Add(workItemDto);
                             }
                         }
@@ -211,12 +159,91 @@ namespace BlazingPoints
             }
             catch (Exception ex)
             {
-                var exceptionMessage = $"ex.message1 {ex.Message}";
+                var exceptionMessage = $"ex.message {ex.Message}";
                 Console.WriteLine(exceptionMessage);
                 sprintProgressDto = new SprintProgressDto { IterationNumber = exceptionMessage };
             }
 
             return sprintProgressDto;
+        }
+
+        private async Task<IEnumerable<ValueB>> GetValueBsFromWorkitems(string sprintDateYMDTHMSMSZ, List<Workitem> workItemsInSprintOnSprintDate)
+        {
+            //from the list of ids/urls for that date create a list of just the ids (for later use in getting effort, state, etc for a batch of PBIs)
+            var workItemIds = new List<int>();
+
+            foreach (var workItemInSprintOnSprintDate in workItemsInSprintOnSprintDate)
+            {
+                //exclude certain ids to prevent this response fromn the api {"$id":"1","innerException":null,"message":"TF401232: Work item 27142 does not exist, or you do not have permissions to read it.","typeName":"Microsoft.TeamFoundation.WorkItemTracking.Server.WorkItemUnauthorizedAccessException, Microsoft.TeamFoundation.WorkItemTracking.Server","typeKey":"WorkItemUnauthorizedAccessException","errorCode":0,"eventId":3200}
+                if (workItemInSprintOnSprintDate.id != 27142)
+                {
+                    workItemIds.Add(workItemInSprintOnSprintDate.id);
+                }
+            }
+
+            var valueBs = await GetValueBs(sprintDateYMDTHMSMSZ, workItemIds);
+
+            return valueBs;
+        }
+
+        private async Task<IEnumerable<ValueB>> GetValueBs(string sprintDateYMDTHMSMSZ, List<int> workItemIds)
+        {
+            //get effort, state, etc (json response) for the batch of PBIs in the sprint on this specific date
+            var workItemsAttributesJsons = await GetWorkItemAttributesJsonByBatch(workItemIds, sprintDateYMDTHMSMSZ);
+
+            //deserialise
+            var batchesFull = JsonConvert.DeserializeObject<Batches>(workItemsAttributesJsons);
+
+            var valueBs = GetLivingWorkItems(batchesFull);
+
+            return valueBs;
+        }
+
+        private WorkItemDto GetWorkItemDto(EffortType effortType, DateTime sprintDateWithTime, ValueB valueB)
+        {
+            var effort = GetEffort(effortType, valueB);
+
+            var workItemDto = new WorkItemDto
+            {
+                AsOf = sprintDateWithTime,
+                Effort = effort,
+                Id = valueB.id,
+                State = valueB.fieldsB.SystemState
+            };
+
+            return workItemDto;
+        }
+
+        private async Task<Tuple<EffortType, SprintProgressDto>> GatherData()
+        {
+            //get the sprint start end dates json response
+            var teamSettingsIterationsJson = await _jsRuntime.InvokeAsync<string>("handleGetIterationData");
+
+            //get the project id
+            var projectDetailsDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData");
+
+            var projectDetails = JsonConvert.DeserializeObject<ProjectDetails>(projectDetailsDataJson);
+
+            //get template id for project id
+            var projectDetails2DataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkItemProcessForProjectData2", projectDetails.ProjectId);
+
+            var projectDetail2 = JsonConvert.DeserializeObject<ProjectDetail2>(projectDetails2DataJson);
+            var kvp = projectDetail2.valuePD2.FirstOrDefault(x => x.name == "System.ProcessTemplateType");
+
+            //get list of all project types
+            var workProcessDataJson = await _jsRuntime.InvokeAsync<string>("handleGetWorkProcessesData");
+
+            var workProcesses = JsonConvert.DeserializeObject<WorkProcesses>(workProcessDataJson);
+            var workProcess = workProcesses.valueWP.FirstOrDefault(x => x.typeId == (string)kvp.value);
+
+            //get the field name containing the effort figure
+            var workItemProcess = GetWorkItemProcess(workProcess.name);
+            var effortType = GetEffortType(workItemProcess);
+
+            //deserialize to a poco
+            var sprintProgressDto = _sprintIterationProcessor.GetSprintProgressDto(teamSettingsIterationsJson);
+
+            return new Tuple<EffortType, SprintProgressDto>(effortType, sprintProgressDto);
         }
 
         private static WorkItemProcess GetWorkItemProcess(string systemProcessTemplateType3name)
