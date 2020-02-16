@@ -110,16 +110,7 @@ namespace BlazingPoints
                 var effortType = data.Item1;
                 sprintProgressDto = data.Item2;
 
-                //loop thru each of the 10 sprint days
-                for (var sprintDateWithoutTime = sprintProgressDto.SprintStart;
-                     sprintDateWithoutTime <= sprintProgressDto.SprintEnd;
-                     sprintDateWithoutTime = sprintDateWithoutTime.AddDays(1))
-                {
-                    if (IsWeekday(sprintDateWithoutTime))
-                    {
-                        await PopulateSprintProgressDto(sprintProgressDto, effortType, sprintDateWithoutTime);
-                    }
-                }
+                await LoopThruSprintDays(sprintProgressDto, effortType);
             }
             catch (Exception ex)
             {
@@ -129,6 +120,20 @@ namespace BlazingPoints
             }
 
             return sprintProgressDto;
+        }
+
+        private async Task LoopThruSprintDays(SprintProgressDto sprintProgressDto, EffortType effortType)
+        {
+            //loop thru each of the 10 sprint days
+            for (var sprintDateWithoutTime = sprintProgressDto.SprintStart;
+                                 sprintDateWithoutTime <= sprintProgressDto.SprintEnd;
+                                 sprintDateWithoutTime = sprintDateWithoutTime.AddDays(1))
+            {
+                if (IsWeekday(sprintDateWithoutTime))
+                {
+                    await PopulateSprintProgressDto(sprintProgressDto, effortType, sprintDateWithoutTime);
+                }
+            }
         }
 
         private static bool IsWeekday(DateTime sprintDateWithoutTime)
