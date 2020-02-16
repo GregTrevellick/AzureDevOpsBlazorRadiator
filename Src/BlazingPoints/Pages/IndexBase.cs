@@ -115,8 +115,7 @@ namespace BlazingPoints
                      sprintDateWithoutTime <= sprintProgressDto.SprintEnd;
                      sprintDateWithoutTime = sprintDateWithoutTime.AddDays(1))
                 {
-                    if (sprintDateWithoutTime.DayOfWeek != DayOfWeek.Saturday &&
-                        sprintDateWithoutTime.DayOfWeek != DayOfWeek.Sunday)
+                    if (IsWeekday(sprintDateWithoutTime))
                     {
                         await PopulateSprintProgressDto(sprintProgressDto, effortType, sprintDateWithoutTime);
                     }
@@ -130,6 +129,13 @@ namespace BlazingPoints
             }
 
             return sprintProgressDto;
+        }
+
+        private static bool IsWeekday(DateTime sprintDateWithoutTime)
+        {
+            return 
+                sprintDateWithoutTime.DayOfWeek != DayOfWeek.Saturday &&
+                sprintDateWithoutTime.DayOfWeek != DayOfWeek.Sunday;
         }
 
         private async Task PopulateSprintProgressDto(SprintProgressDto sprintProgressDto, EffortType effortType, DateTime sprintDateWithoutTime)
