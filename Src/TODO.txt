@@ -6,7 +6,6 @@ remove 'preview' status
 https://khalidabuhakmeh.com/convert-a-csharp-object-to-almost-any-format
 add configuration that includes/excludes weekends, set time of day, etc
 dark theme (vss.init applyTheme: true)
-add to badge magic / readme badges
 add gif to readme
 pbis that have been in > 1 sprint count
 historic graphs for velocity (incl. change iteration number)
