@@ -118,42 +118,7 @@ namespace BlazingPoints
                     if (sprintDateWithoutTime.DayOfWeek != DayOfWeek.Saturday &&
                         sprintDateWithoutTime.DayOfWeek != DayOfWeek.Sunday)
                     {
-                        var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
-
-                        //get work item ids (json response) in the sprint on this specific date
-                        var workItemJson = await GetWorkItemData(sprintDateWithTime);
-
-                        //set up date format
-                        var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
-                        Console.WriteLine($"VSIX: {sprintDateYMDTHMSMSZ}");
-
-                        //deserialize to a list of ids/urls for that date
-                        var workItemsInSprintOnSprintDate = _workItemProcessor.GetWorkItemsByJson(workItemJson).ToList();
-
-                        if (workItemsInSprintOnSprintDate == null || workItemsInSprintOnSprintDate.Count == 0)
-                        {
-                            //handle zero work items on day zero/one of the sprint (or on dates in the future) as the first (aka "zeroth") day of sprint seems to return zero work items e.g. if sprint starts on 10th Jan
-                            var workItemDto = new WorkItemDto
-                            {
-                                AsOf = sprintDateWithTime
-                            };
-
-                            InitialiseWorkItemDtos(sprintProgressDto);
-
-                            sprintProgressDto.WorkItemDtos.Add(workItemDto);
-                        }
-                        else
-                        {
-                            var valueBs = await GetValueBsFromWorkitems(sprintDateYMDTHMSMSZ, workItemsInSprintOnSprintDate);
-
-                            InitialiseWorkItemDtos(sprintProgressDto);
-
-                            foreach (var valueB in valueBs)
-                            {
-                                var workItemDto = GetWorkItemDto(effortType, sprintDateWithTime, valueB);
-                                sprintProgressDto.WorkItemDtos.Add(workItemDto);
-                            }
-                        }
+                        await PopulateSprintProgressDto(sprintProgressDto, effortType, sprintDateWithoutTime);
                     }
                 }
             }
@@ -165,6 +130,51 @@ namespace BlazingPoints
             }
 
             return sprintProgressDto;
+        }
+
+        private async Task PopulateSprintProgressDto(SprintProgressDto sprintProgressDto, EffortType effortType, DateTime sprintDateWithoutTime)
+        {
+            var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
+
+            //get work item ids (json response) in the sprint on this specific date
+            var workItemJson = await GetWorkItemData(sprintDateWithTime);
+
+            //set up date format
+            var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
+            Console.WriteLine($"VSIX: {sprintDateYMDTHMSMSZ}");
+
+            //deserialize to a list of ids/urls for that date
+            var workItemsInSprintOnSprintDate = _workItemProcessor.GetWorkItemsByJson(workItemJson).ToList();
+
+            await PopulateSprintProgressDto(sprintProgressDto, effortType, sprintDateWithTime, sprintDateYMDTHMSMSZ, workItemsInSprintOnSprintDate);
+        }
+
+        private async Task PopulateSprintProgressDto(SprintProgressDto sprintProgressDto, EffortType effortType, DateTime sprintDateWithTime, string sprintDateYMDTHMSMSZ, List<Workitem> workItemsInSprintOnSprintDate)
+        {
+            if (workItemsInSprintOnSprintDate == null || workItemsInSprintOnSprintDate.Count == 0)
+            {
+                //handle zero work items on day zero/one of the sprint (or on dates in the future) as the first (aka "zeroth") day of sprint seems to return zero work items e.g. if sprint starts on 10th Jan
+                var workItemDto = new WorkItemDto
+                {
+                    AsOf = sprintDateWithTime
+                };
+
+                InitialiseWorkItemDtos(sprintProgressDto);
+
+                sprintProgressDto.WorkItemDtos.Add(workItemDto);
+            }
+            else
+            {
+                var valueBs = await GetValueBsFromWorkitems(sprintDateYMDTHMSMSZ, workItemsInSprintOnSprintDate);
+
+                InitialiseWorkItemDtos(sprintProgressDto);
+
+                foreach (var valueB in valueBs)
+                {
+                    var workItemDto = GetWorkItemDto(effortType, sprintDateWithTime, valueB);
+                    sprintProgressDto.WorkItemDtos.Add(workItemDto);
+                }
+            }
         }
 
         private async Task<IEnumerable<ValueB>> GetValueBsFromWorkitems(string sprintDateYMDTHMSMSZ, List<Workitem> workItemsInSprintOnSprintDate)
