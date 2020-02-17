@@ -9,7 +9,7 @@ environment:
 install:
     - choco install "sonarscanner-msbuild-netcoreapp2.0" -y
 
-nuget: account_feed: true
+nuget: account_feed
 
 before_build:
     - cmd: nuget restore Src/BlazingPoints.sln
