@@ -13,6 +13,7 @@ before_build:
     - cmd: nuget restore Src/BlazingPoints.sln
     - choco install opencover.portable
     - choco install codecov
+    - dotnet tool install -g dotnet-sonarscanner
     - dotnet sonarscanner begin /k:"BlazingPoints" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%my_encrypted_sonarqube_token%" /d:"sonar.organization=gregtrevellick-github"
 build:
     project: Src/BlazingPoints.sln
