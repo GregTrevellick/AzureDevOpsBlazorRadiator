@@ -82,7 +82,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.Blazor" Version="19.1.10" />
     <PackageReference Include="LinqToCsv" Version="1.5.0" />
     <PackageReference Include="MatBlazor" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
@@ -92,6 +91,12 @@
     <PackageReference Include="Microsoft.TeamFoundationServer.ExtendedClient" Version="16.153.0" />
     <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="16.153.0" />
     <PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DevExpress.Blazor">
+      <HintPath>..\AppveyorThirdPartyRefs\DevExpress.Blazor.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
