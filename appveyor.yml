@@ -7,7 +7,7 @@ environment:
     my_encrypted_sonarqube_token:
         secure: 94Py9ytqrmqFVtmUiyayJJ4Hgg2vjF1+YuRJldGGWO82/9zEens+sCjeh7wzc2Le
 install:
-   -choco install "sonarscanner-msbuild-netcoreapp2.0" -y
+    - choco install "sonarscanner-msbuild-netcoreapp2.0" -y
 
 before_build:
     - cmd: nuget restore Src/BlazingPoints.sln
