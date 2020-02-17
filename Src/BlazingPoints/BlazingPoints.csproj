@@ -82,6 +82,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExpress.Blazor" Version="19.1.10" />
     <PackageReference Include="LinqToCsv" Version="1.5.0" />
     <PackageReference Include="MatBlazor" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
