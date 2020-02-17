@@ -8,8 +8,7 @@ environment:
         secure: 94Py9ytqrmqFVtmUiyayJJ4Hgg2vjF1+YuRJldGGWO82/9zEens+sCjeh7wzc2Le
 install:
     - choco install "sonarscanner-msbuild-netcoreapp2.0" -y
-nuget:
-  account_feed: true
+
 before_build:
     - cmd: nuget restore Src/BlazingPoints.sln
     - choco install opencover.portable
