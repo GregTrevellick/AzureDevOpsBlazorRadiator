@@ -36,7 +36,7 @@ namespace BlazingPoints.Api.Json
         [JsonProperty("System.State")]
         public string SystemState { get; set; }
 
-        [JsonProperty("System.Title")]
+        [JsonProperty("System.Title")]     
         public string SystemTitle { get; set; }
 
         [JsonProperty("Microsoft.VSTS.Scheduling.StoryPoints")]

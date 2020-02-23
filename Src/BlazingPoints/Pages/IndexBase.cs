@@ -145,7 +145,7 @@ namespace BlazingPoints
 
         private async Task PopulateSprintProgressDto(SprintProgressDto sprintProgressDto, EffortType effortType, DateTime sprintDateWithoutTime)
         {
-            var sprintDateWithTime = GetSprintDateWithTime(sprintProgressDto, sprintDateWithoutTime);
+            var sprintDateWithTime = GetSprintDateWithTime(sprintDateWithoutTime);
 
             //get work item ids (json response) in the sprint on this specific date
             var workItemJson = await GetWorkItemData(sprintDateWithTime);
@@ -195,11 +195,7 @@ namespace BlazingPoints
 
             foreach (var workItemInSprintOnSprintDate in workItemsInSprintOnSprintDate)
             {
-                //exclude certain ids to prevent this response fromn the api {"$id":"1","innerException":null,"message":"TF401232: Work item 27142 does not exist, or you do not have permissions to read it.","typeName":"Microsoft.TeamFoundation.WorkItemTracking.Server.WorkItemUnauthorizedAccessException, Microsoft.TeamFoundation.WorkItemTracking.Server","typeKey":"WorkItemUnauthorizedAccessException","errorCode":0,"eventId":3200}
-                if (workItemInSprintOnSprintDate.id != 27142)
-                {
-                    workItemIds.Add(workItemInSprintOnSprintDate.id);
-                }
+                workItemIds.Add(workItemInSprintOnSprintDate.id);
             }
 
             var valueBs = await GetValueBs(sprintDateYMDTHMSMSZ, workItemIds);
@@ -222,7 +218,7 @@ namespace BlazingPoints
 
         private WorkItemDto GetWorkItemDto(EffortType effortType, DateTime sprintDateWithTime, ValueB valueB)
         {
-            var effort = GetEffort(effortType, valueB);
+            var effort = GetEffort(effortType, valueB.fieldsB);
 
             var workItemDto = new WorkItemDto
             {
@@ -325,7 +321,9 @@ namespace BlazingPoints
             return batchesFull.valueB.Where(x =>
                 x.fieldsB.SystemState.ToLower() != "failed" &&
                 x.fieldsB.SystemState.ToLower() != "removed" &&
-                x.fieldsB.SystemState.ToLower() != "to do");
+                x.fieldsB.SystemState.ToLower() != "to do" &&
+                x.fieldsB.SystemState.ToLower() != "todo" &&
+                x.fieldsB.SystemWorkItemType.ToLower() != "task");
         }
 
         private static void InitialiseWorkItemDtos(SprintProgressDto sprintProgressDto)
@@ -336,30 +334,56 @@ namespace BlazingPoints
             }
         }
 
-        private float? GetEffort(EffortType effortType, ValueB batchValue)
+        private float? GetEffort(EffortType effortType, FieldsB fieldsB)
         {
             float? effort;
 
             switch (effortType)
             {
                 case EffortType.Effort:
-                    effort = batchValue.fieldsB.MicrosoftVSTSSchedulingEffort;
+                    effort = fieldsB.MicrosoftVSTSSchedulingEffort;
                     break;
                 case EffortType.StoryPoints:
-                    effort = batchValue.fieldsB.MicrosoftVSTSSchedulingStoryPoints;
+                    effort = fieldsB.MicrosoftVSTSSchedulingStoryPoints;
                     break;
                 case EffortType.Size:
-                    effort = batchValue.fieldsB.MicrosoftVSTSSchedulingSize;
+                    effort = fieldsB.MicrosoftVSTSSchedulingSize;
                     break;
                 default:
-                    effort = 0;
+                    effort = GetDefaultEffort(fieldsB);
                     break;
             }
 
             return effort;
         }
 
-        private DateTime GetSprintDateWithTime(SprintProgressDto sprintProgressDto, DateTime sprintDateWithoutTime)
+        private float? GetDefaultEffort(FieldsB fieldsB)
+        {
+            if (fieldsB.MicrosoftVSTSSchedulingEffort.HasValue)
+            {
+                return fieldsB.MicrosoftVSTSSchedulingEffort;
+            }
+            else
+            {
+                if (fieldsB.MicrosoftVSTSSchedulingStoryPoints.HasValue)
+                {
+                    return fieldsB.MicrosoftVSTSSchedulingStoryPoints;
+                }
+                else
+                {
+                    if (fieldsB.MicrosoftVSTSSchedulingSize.HasValue)
+                    {
+                        return fieldsB.MicrosoftVSTSSchedulingSize;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        private DateTime GetSprintDateWithTime(DateTime sprintDateWithoutTime)
         {
             DateTime sprintDateWithTime;
 

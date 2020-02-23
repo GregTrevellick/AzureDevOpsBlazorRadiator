@@ -7,8 +7,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingPoints", "BlazingPoi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7DAE2639-6506-4767-B138-0C64ADF0FE42}"
 	ProjectSection(SolutionItems) = preProject
+		..\.bettercodehub.yml = ..\.bettercodehub.yml
+		..\.codebeatignore = ..\.codebeatignore
+		..\.gitignore = ..\.gitignore
+		..\.hound.yml = ..\.hound.yml
+		..\.rocro.yml = ..\.rocro.yml
 		..\appveyor.yml = ..\appveyor.yml
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
+		..\lgtm.yml = ..\lgtm.yml
 		..\README.md = ..\README.md
+		..\renovate.json = ..\renovate.json
 		TODO.txt = TODO.txt
 		VsmpBuilder.bat = VsmpBuilder.bat
 		VsmpBuilder.private.bat = VsmpBuilder.private.bat

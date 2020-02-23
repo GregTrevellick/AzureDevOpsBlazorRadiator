@@ -25,7 +25,7 @@ namespace BlazingPoints.Api
                         new WorkItemDto { AsOf = now.AddDays(i+0), Effort = 0, Id = 1, State = "done" },
                       
                         // Day 2
-                        new WorkItemDto { AsOf = now.AddDays(i+1), Effort = 100, Id = 1, State = "approved" },
+                        new WorkItemDto { AsOf = now.AddDays(i+1), Effort = 1000, Id = 1, State = "approved" },
                         new WorkItemDto { AsOf = now.AddDays(i+1), Effort = 20, Id = 1, State = "done" },
                         
                         // Day 3
