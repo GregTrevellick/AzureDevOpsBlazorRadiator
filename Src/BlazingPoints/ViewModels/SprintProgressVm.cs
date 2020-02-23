@@ -126,13 +126,13 @@ namespace BlazingPoints.ViewModels
             return result;
         }
 
-        private static float? GetDonePoints(IEnumerable<WorkItemVm> workItemVm)
+        private float? GetDonePoints(IEnumerable<WorkItemVm> workItemVm)
         {
             var result = workItemVm.Where(x => x.State?.ToLower() == "closed" || x.State?.ToLower() == "done").Sum(x => x.Effort);
             return result;
         }
 
-        private static bool IsSprintDateReached(DateTime sprintDayDate)
+        private bool IsSprintDateReached(DateTime sprintDayDate)
         {
             return sprintDayDate <= DateTime.Now;
         }
@@ -142,7 +142,7 @@ namespace BlazingPoints.ViewModels
             return WorkItemVms.Where(x => x.AsOf.Date == sprintDayDate.Date);
         }
 
-        private static bool IsWorkItemVmPopulated(IEnumerable<WorkItemVm> workItemVm)
+        private bool IsWorkItemVmPopulated(IEnumerable<WorkItemVm> workItemVm)
         {
             return workItemVm != null && workItemVm.Count() > 0;
         }

@@ -136,7 +136,7 @@ namespace BlazingPoints
             }
         }
 
-        private static bool IsWeekday(DateTime sprintDateWithoutTime)
+        private bool IsWeekday(DateTime sprintDateWithoutTime)
         {
             return 
                 sprintDateWithoutTime.DayOfWeek != DayOfWeek.Saturday &&
@@ -263,7 +263,7 @@ namespace BlazingPoints
             return new Tuple<EffortType, SprintProgressDto>(effortType, sprintProgressDto);
         }
 
-        private static WorkItemProcess GetWorkItemProcess(string systemProcessTemplateType3name)
+        private WorkItemProcess GetWorkItemProcess(string systemProcessTemplateType3name)
         {
             WorkItemProcess workItemProcess;
 
@@ -289,7 +289,7 @@ namespace BlazingPoints
             return workItemProcess;
         }
 
-        private static EffortType GetEffortType(WorkItemProcess workItemProcess)
+        private EffortType GetEffortType(WorkItemProcess workItemProcess)
         {
             EffortType effortType;
 
@@ -316,7 +316,7 @@ namespace BlazingPoints
         }
 
 
-        private static IEnumerable<ValueB> GetLivingWorkItems(Batches batchesFull)
+        private IEnumerable<ValueB> GetLivingWorkItems(Batches batchesFull)
         {
             return batchesFull.valueB.Where(x =>
                 x.fieldsB.SystemState.ToLower() != "failed" &&
@@ -326,7 +326,7 @@ namespace BlazingPoints
                 x.fieldsB.SystemWorkItemType.ToLower() != "task");
         }
 
-        private static void InitialiseWorkItemDtos(SprintProgressDto sprintProgressDto)
+        private void InitialiseWorkItemDtos(SprintProgressDto sprintProgressDto)
         {
             if (sprintProgressDto.WorkItemDtos == null)
             {
