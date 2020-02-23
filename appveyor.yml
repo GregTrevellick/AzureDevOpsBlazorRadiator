@@ -14,7 +14,7 @@ before_build:
     - choco install opencover.portable
     - choco install codecov
     - dotnet tool install -g dotnet-sonarscanner
-    - dotnet sonarscanner begin /key:"GregTrevellick_AzureDevOpsBlazorRadiator" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%my_encrypted_sonarqube_token%" /o:"gregtrevellick-github"
+    - dotnet sonarscanner begin /key:"GregTrevellick_AzureDevOpsBlazorRadiator" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%my_encrypted_sonarqube_token%" /o:"gregtrevellick-github"
 build:
     project: Src/BlazingPoints.sln
     verbosity: minimal
