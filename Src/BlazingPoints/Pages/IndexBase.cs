@@ -152,7 +152,6 @@ namespace BlazingPoints
 
             //set up date format
             var sprintDateYMDTHMSMSZ = GetFormattedDate(sprintDateWithTime);
-            Console.WriteLine($"VSIX: {sprintDateYMDTHMSMSZ}");
 
             //deserialize to a list of ids/urls for that date
             var workItemsInSprintOnSprintDate = _workItemProcessor.GetWorkItemsByJson(workItemJson).ToList();
