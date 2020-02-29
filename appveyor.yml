@@ -10,10 +10,10 @@ branches:
 #    - choco install "sonarscanner-msbuild-netcoreapp2.0" -y
 before_build:
     - cmd: nuget restore Src/BlazingPoints.sln
-#   - choco install opencover.portable
-#   - choco install codecov
-#   - dotnet tool install -g dotnet-sonarscanner
-#   - dotnet sonarscanner begin /key:"GregTrevellick_AzureDevOpsBlazorRadiator" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%my_encrypted_sonarqube_token%" /o:"gregtrevellick-github"
+#    - choco install opencover.portable
+#    - choco install codecov
+#    - dotnet tool install -g dotnet-sonarscanner
+#    - dotnet sonarscanner begin /key:"GregTrevellick_AzureDevOpsBlazorRadiator" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%my_encrypted_sonarqube_token%" /o:"gregtrevellick-github"
 build:
     project: Src/BlazingPoints.sln
     verbosity: minimal
