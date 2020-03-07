@@ -36,10 +36,6 @@
 
 [Subscribe](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/subscription) to receive notificatons.
 
-[![Visual Studio Marketplace version](https://img.shields.io/badge/-AzureDevOpsBlazorRadiator-%23e2165e.svg)](https://marketplace.visualstudio.com/items?itemName=GregTrevellick.AzureDevOpsBlazorRadiator)
-[![Visual Studio Marketplace downloads](https://img.shields.io/vscode-marketplace/d/GregTrevellick.AzureDevOpsBlazorRadiator.svg)](https://marketplace.visualstudio.com/items?itemName=GregTrevellick.AzureDevOpsBlazorRadiator)
-[![Visual Studio Marketplace ratings](https://img.shields.io/vscode-marketplace/r/GregTrevellick.AzureDevOpsBlazorRadiator.svg)](https://marketplace.visualstudio.com/items?itemName=GregTrevellick.AzureDevOpsBlazorRadiator#review-details)
-[![Visual Studio Marketplace version](https://img.shields.io/vscode-marketplace/v/GregTrevellick.AzureDevOpsBlazorRadiator.svg)](https://marketplace.visualstudio.com/items?itemName=GregTrevellick.AzureDevOpsBlazorRadiator)
 
 
 
