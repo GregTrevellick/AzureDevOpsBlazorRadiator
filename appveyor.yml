@@ -9,9 +9,7 @@ environment:
 install:
     - choco install "sonarscanner-msbuild-netcoreapp2.0" -y
 before_build:
-    - cmd: nuget restore Src/BlazingPoints.sln
-#    - choco install opencover.portable
-#    - choco install codecov
+    - cmd: nuget restore Src/BlazingPoints.sln/
     - dotnet tool install -g dotnet-sonarscanner
     - dotnet sonarscanner begin /key:"AzureDevOpsBlazorRadiator" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%my_encrypted_sonarqube_token%" /o:"gregtrevellick-github"
 build:
