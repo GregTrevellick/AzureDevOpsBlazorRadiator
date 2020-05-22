@@ -79,6 +79,8 @@ Built using client-side Blazor technology.
 
 [Kenny Duenke](https://github.com/kduenke/vsts-total-story-points)
 
+[Runar Ovesen Hjerpbakk](https://hjerpbakk.com/blog/2019/10/03/asp-net-core-and-github-actions)
+ 
 [Sebastian Lindström](https://medium.com/codebuddies/getting-to-know-asynchronous-javascript-callbacks-promises-and-async-await-17e0673281ee)
 
 <!--
