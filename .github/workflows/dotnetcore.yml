@@ -21,6 +21,6 @@ jobs:
 #      run: dotnet restore ./src/BlazingPoints.sln
     - name: Build
 #      run: dotnet build ./src/BlazingPoints.sln --configuration Release --no-restore
-      run: dotnet build ./src/BlazingPoints.sln --configuration Release 
+      run: dotnet build ./Src/BlazingPoints.sln --configuration Release 
 #    - name: Test
 #      run: dotnet test --no-restore --verbosity normal
