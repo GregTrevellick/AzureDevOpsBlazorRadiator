@@ -13,7 +13,7 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/GregTrevellick/AzureDevOpsBlazorRadiator.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/GregTrevellick/AzureDevOpsBlazorRadiator/context:javascript)
 [![GitHub top language](https://img.shields.io/github/languages/top/GregTrevellick/AzureDevOpsBlazorRadiator.svg)](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator)
 [![Github language count](https://img.shields.io/github/languages/count/GregTrevellick/AzureDevOpsBlazorRadiator.svg)](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator)
-[![GitHub actions](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/workflows.NET%20Core%20CI/badge.svg)](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/actions)
+[![GitHub actions](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/workflows/.NET%20Core%20CI/badge.svg)](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/actions)
 [![GitHub issues](https://img.shields.io/github/issues-raw/GregTrevellick/AzureDevOpsBlazorRadiator.svg)](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/GregTrevellick/AzureDevOpsBlazorRadiator.svg)](https://github.com/GregTrevellick/AzureDevOpsBlazorRadiator/pulls)
 [![GitHub followers](https://img.shields.io/github/followers/GregTrevellick.svg)](https://github.com/GregTrevellick?tab=followers)
