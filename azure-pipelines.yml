@@ -22,7 +22,7 @@ steps:
     versionSpec: 4.4.1
 
 
-- task: NuGetCommand@2
+- task: NuGetCommand@2.210.0
   displayName: 'NuGet restore'
   inputs:
     restoreSolution: '$(Parameters.solution)'
